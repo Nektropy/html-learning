@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第10-11章 · 贪吃蛇 —— HTML 入门到贪吃蛇</title>
+
+<style>
+  :root {
+    --ink: #1f2328;
+    --quiet: #667085;
+    --line: #e4e7ec;
+    --accent: #1a6dff;
+    --accent-bg: #eef4ff;
+    --code-bg: #f6f8fa;
+    --story-bg: #fff8e6;
+    --story-line: #f0b429;
+    --warn-bg: #fff1f0;
+    --warn-line: #ef4b4b;
+    --ok-bg: #eefaf1;
+    --ok-line: #2ea043;
+    --word-bg: #f4f0ff;
+    --word-line: #7c5cff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 28px 20px 80px;
+    font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 16px;
+    background: #fcfcfd;
+  }
+  h1 { font-size: 1.7em; line-height: 1.3; margin: 0 0 6px; }
+  h2 { font-size: 1.3em; margin: 48px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 1.08em; margin: 26px 0 8px; }
+  .chapter { font-size: .92em; color: var(--quiet); margin: 0 0 4px; letter-spacing: .08em; }
+  code {
+    font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+    background: var(--code-bg); padding: 1px 5px; border-radius: 4px; font-size: .92em;
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: .85em; line-height: 1.65;
+  }
+  pre code { background: none; padding: 0; }
+  .note, .story, .warn, .ok {
+    padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: .95em;
+  }
+  .note { border-left: 4px solid var(--accent); background: var(--accent-bg); }
+  .note b:first-child { color: var(--accent); }
+  .story { border-left: 4px solid var(--story-line); background: var(--story-bg); }
+  .story b:first-child { color: #b06f00; }
+  .warn { border-left: 4px solid var(--warn-line); background: var(--warn-bg); }
+  .warn b:first-child { color: var(--warn-line); }
+  .ok { border-left: 4px solid var(--ok-line); background: var(--ok-bg); }
+  .ok b:first-child { color: #1a7f37; }
+  .wordlist {
+    border: 1px solid var(--word-line); background: var(--word-bg);
+    border-radius: 8px; padding: 6px 14px; margin: 14px 0; font-size: .93em;
+  }
+  .wordlist table { width: 100%; border-collapse: collapse; }
+  .wordlist td { padding: 4px 6px; border-bottom: 1px dashed #d8cfff; vertical-align: top; }
+  .wordlist td:first-child { width: 11em; font-family: Consolas, monospace; white-space: nowrap; }
+  .wordlist td:last-child { width: 4.5em; white-space: nowrap; color: var(--quiet); }
+  .compare { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: .93em; }
+  .compare th, .compare td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  .compare th { background: var(--code-bg); }
+  ul.toc { padding-left: 1.2em; }
+  ul.toc li { margin: 3px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .foot { margin-top: 60px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--quiet); font-size: .9em; }
+  .step-title {
+    margin: 40px 0 6px; padding: 8px 14px; border-radius: 8px;
+    background: #1f2328; color: #fff; font-size: 1.05em; font-weight: bold;
+  }
+  .step-title span { color: #9ecbff; margin-right: 8px; }
+  .filetag {
+    display: inline-block; font-size: .82em; padding: 1px 8px; border-radius: 4px;
+    background: #e9f0ff; color: #1a5cd0; margin-left: 8px; vertical-align: middle;
+  }
+  .demo-link {
+    display: inline-block; padding: 6px 14px; border-radius: 6px;
+    background: var(--accent); color: #fff; font-size: .92em;
+  }
+  .demo-link:hover { background: #0f56d6; text-decoration: none; }
+</style>
+</head>
+
+<body>
+
+<h1>从零做一个贪吃蛇</h1>
+<p class="chapter">第 10 — 11 章 · 先一步一步做，最后看完整代码</p>
+
+<p>
+  这一篇是整套教程的重点。我们会从“屏幕上出现一个方块”开始，
+  用 <b>11 个小步骤</b>，一步一步把它变成一个能玩的贪吃蛇。
+</p>
+
+<div class="note">
+  <b>动手之前先做一件事</b>
+  打开 <a href="贪吃蛇_最终版.html">贪吃蛇_最终版.html</a> 玩一局。
+  你知道<b>目标</b>是什么样，学起来会踏实很多。
+</div>
+
+<div class="wordlist">
+  <p style="margin:6px 0 4px"><b>本篇全文的单词表</b>（看到生词就回这里查，不用背）</p>
+  <table>
+    <tr><td>canvas</td><td>画布</td><td>n.</td></tr>
+    <tr><td>context</td><td>上下文、环境</td><td>n.</td></tr>
+    <tr><td>fill</td><td>填充、涂满</td><td>v.</td></tr>
+    <tr><td>rect</td><td>矩形（rectangle 的缩写）</td><td>n.</td></tr>
+    <tr><td>clear</td><td>清除</td><td>v.</td></tr>
+    <tr><td>begin / end</td><td>开始 / 结束</td><td>v.</td></tr>
+    <tr><td>snake</td><td>蛇</td><td>n.</td></tr>
+    <tr><td>food</td><td>食物</td><td>n.</td></tr>
+    <tr><td>head</td><td>头</td><td>n.</td></tr>
+    <tr><td>tail</td><td>尾巴</td><td>n.</td></tr>
+    <tr><td>body</td><td>身体</td><td>n.</td></tr>
+    <tr><td>segment</td><td>一节（一段）</td><td>n.</td></tr>
+    <tr><td>score</td><td>分数</td><td>n.</td></tr>
+    <tr><td>speed</td><td>速度</td><td>n.</td></tr>
+    <tr><td>level</td><td>等级</td><td>n.</td></tr>
+    <tr><td>grid</td><td>网格</td><td>n.</td></tr>
+    <tr><td>cell</td><td>格子（细胞）</td><td>n.</td></tr>
+    <tr><td>wall</td><td>墙（边界）</td><td>n.</td></tr>
+    <tr><td>game over</td><td>游戏结束</td><td>n.</td></tr>
+    <tr><td>pause / resume</td><td>暂停 / 继续</td><td>v.</td></tr>
+    <tr><td>restart</td><td>重新开始</td><td>v.</td></tr>
+    <tr><td>overlay</td><td>遮罩层（覆盖在上面的那一层）</td><td>n.</td></tr>
+    <tr><td>direction</td><td>方向</td><td>n.</td></tr>
+    <tr><td>opposite</td><td>相反的</td><td>adj.</td></tr>
+    <tr><td>random</td><td>随机的</td><td>adj.</td></tr>
+    <tr><td>floor</td><td>向下取整、地板</td><td>v./n.</td></tr>
+    <tr><td>collision</td><td>碰撞</td><td>n.</td></tr>
+    <tr><td>update</td><td>更新</td><td>v.</td></tr>
+    <tr><td>draw</td><td>画</td><td>v.</td></tr>
+    <tr><td>loop</td><td>循环</td><td>n.</td></tr>
+    <tr><td>frame</td><td>帧（一帧就是一个瞬间的画面）</td><td>n.</td></tr>
+    <tr><td>request</td><td>请求</td><td>v.</td></tr>
+    <tr><td>animation</td><td>动画</td><td>n.</td></tr>
+    <tr><td>event</td><td>事件（比如按了键盘）</td><td>n.</td></tr>
+    <tr><td>listener</td><td>监听器</td><td>n.</td></tr>
+    <tr><td>keydown</td><td>按键按下</td><td>n.</td></tr>
+    <tr><td>highest / best</td><td>最高 / 最好（最高分）</td><td>adj.</td></tr>
+    <tr><td>storage</td><td>存储</td><td>n.</td></tr>
+    <tr><td>local</td><td>本地的</td><td>adj.</td></tr>
+    <tr><td>prevent</td><td>阻止</td><td>v.</td></tr>
+    <tr><td>default</td><td>默认的</td><td>adj./n.</td></tr>
+  </table>
+</div>
+
+<ul class="toc">
+  <li><a href="#what">先想清楚：贪吃蛇是怎么“动”的</a></li>
+  <li><a href="#proto">原型：我写的第一版，和它的小毛病</a></li>
+  <li><a href="#s1">第 1 步 · 让画布上出现一个方块</a></li>
+  <li><a href="#s2">第 2 步 · 让方块一格一格往前走</a></li>
+  <li><a href="#s3">第 3 步 · 加一条尾巴，变成蛇</a></li>
+  <li><a href="#s4">第 4 步 · 让蛇听键盘的话</a></li>
+  <li><a href="#s5">第 5 步 · 自动跑起来</a></li>
+  <li><a href="#s6">第 6 步 · 撞墙了怎么办</a></li>
+  <li><a href="#s7">第 7 步 · 加上食物</a></li>
+  <li><a href="#s8">第 8 步 · 吃到食物就变长</a></li>
+  <li><a href="#s9">第 9 步 · 咬到自己也要结束</a></li>
+  <li><a href="#s10">第 10 步 · 让它变好看</a></li>
+  <li><a href="#s11">第 11 步 · 补上“缓冲方向”这个小坑</a></li>
+  <li><a href="#features">加餐 · 暂停、空格暂停、最高分</a></li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="what">先想清楚：贪吃蛇是怎么“动”的</h2>
+
+<p>
+  贪吃蛇看起来是在“动”，其实没有任何东西真的滑过去了。
+  它在每一刻都只是把整条蛇<b>重新画一遍</b>，一般每秒画 10 次。
+  上一秒的蛇在这里，下一秒的蛇就朝前挪了一格 —— 你的眼睛就把这串静止的画面看成了动画。
+  2013 年的诺基亚手机游戏和 1976 年的街机，都是同一个道理。
+</p>
+
+<p>所以这个游戏的核心，其实只有<b>三个动作，每秒重复 10 次</b>：</p>
+<ol>
+  <li><b>算</b>（update）：算出蛇下一秒应该在哪 —— 那一格有没有食物？撞墙了没有？咬到自己了没有？</li>
+  <li><b>画</b>（draw）：把整块画布清空，再按最新位置画一遍蛇和食物。</li>
+  <li><b>等一小会儿</b>，再回到第一步。</li>
+</ol>
+
+<p>这三件事按顺序、不停重复，有一个专门的名字：<b>game loop</b>（游戏循环）。</p>
+
+<div class="story">
+  <b>小故事 · 让浏览器“下次再画”的那一招</b>
+  <p>
+    很早以前，网页要做动画，得靠 <b>setInterval</b>（每隔一会儿执行一次）。
+    问题是：它不看屏幕上现在有没有画面，就算你切到别的标签页、或者电脑卡了一下，它也照样按时“叫醒”你，于是动画就一顿一顿的。
+  </p>
+  <p>
+    2011 年前后，浏览器厂商合力推出一个更聪明的函数：
+    <b>requestAnimationFrame</b>，直译“请求动画帧”。
+    它的意思是：“等浏览器下次准备好重画屏幕时，请顺便执行我的函数。”
+    这样游戏循环就和屏幕刷新率对上了，动画变得很顺滑，切到后台时还会自动慢下来，省电。
+  </p>
+  <p>
+    这个函数一出来，网页游戏的大门就打开了。今天你在浏览器里玩的游戏，几乎都靠它驱动。
+  </p>
+</div>
+
+<div class="wordlist">
+  <table>
+    <tr><td>loop</td><td>循环</td><td>n.</td></tr>
+    <tr><td>update</td><td>更新</td><td>v.</td></tr>
+    <tr><td>draw</td><td>画</td><td>v.</td></tr>
+    <tr><td>interval</td><td>间隔</td><td>n.</td></tr>
+    <tr><td>request / animation / frame</td><td>请求 / 动画 / 帧</td><td>n.</td></tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="proto">原型：我写的第一版，和它的小毛病</h2>
+
+<p>
+  下面是我自己最早写出来的那一版。你可以直接打开玩，它已经能跑了。
+  但我把它留在这里，是因为<b>它有两个毛病</b>，很多教程都会悄悄绕过。先玩一玩，看看你能不能发现。
+</p>
+
+<p><a class="demo-link" href="贪吃蛇_原型版.html">打开原型版 · 贪吃蛇_原型版.html</a></p>
+
+<div class="note">
+  <b>先卖个关子</b>
+  这个“小毛病”在<b>第 11 步</b>里会讲透：它和你按方向键的习惯有关。
+  你玩的时候可以故意做一件事：蛇向右走，然后飞快地按 ↑ 再按 ←，看看会发生什么。
+</div>
+
+<p>
+  另外，这一版里还藏着另一个问题：按键盘的 <b>↓</b> 或 <b>空格</b> 时，整个网页会跟着往下滚。
+  你会看到页面一抖一抖的。这两个问题都会在后面解决。
+</p>
+
+<div class="story">
+  <b>小故事 · 那个被抄了无数遍的 <code>&lt;canvas&gt;</code></b>
+  <p>
+    “画布”（canvas）其实在 2004 年前后就在浏览器里悄悄出现了。
+    据说苹果公司当时想在网页里画图，就往浏览器里加了一个 <code>&lt;canvas&gt;</code> 标签。
+    这个标签背后没有复杂的插件，只提供一块“空白纸”和一支“刷子”。
+  </p>
+  <p>
+    因为简单，它很快成了网页游戏的标准画布：贪吃蛇、俄罗斯方块、小蜜蜂，全都画在上面。
+    今天你看的很多网页图表、小游戏，也都是用 <code>&lt;canvas&gt;</code> 画出来的。
+  </p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">第 1 步 · 让画布上出现一个方块</h2>
+
+<div class="step-title"><span>STEP 1</span>画布和方块<span class="filetag">step1.html</span></div>
+
+<p>先只做一件事：在页面上放一块黑色画布，在它中间画一个红色方块。</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;贪吃蛇 · 第1步&lt;/title&gt;
+  &lt;style&gt;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+    }
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;canvas id="board" width="480" height="480"&gt;&lt;/canvas&gt;
+
+  &lt;script&gt;
+    // 1. 找到画布
+    const board = document.getElementById("board");
+    // 2. 拿到画布的“画笔”
+    const pen = board.getContext("2d");
+
+    // 3. 往网格坐标 (10, 10) 画一个格子
+    pen.fillStyle = "#ff6b6b";
+    pen.fillRect(10 * 20, 10 * 20, 20, 20);
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<h3>逐句翻译</h3>
+<table class="compare">
+  <tr><th>代码</th><th>翻译</th></tr>
+  <tr><td><code>&lt;canvas id="board" width="480" height="480"&gt;</code></td><td>画布，名字叫 board，宽 480 像素、高 480 像素</td></tr>
+  <tr><td><code>document.getElementById("board")</code></td><td>从文档（document）里，用 getElementById（按 id 拿元素）拿到 board 那块画布</td></tr>
+  <tr><td><code>board.getContext("2d")</code></td><td>拿到画布上“2D 平面”的画笔（上下文）</td></tr>
+  <tr><td><code>pen.fillStyle = "#ff6b6b"</code></td><td>把画笔的填充样式设为珊瑚红</td></tr>
+  <tr><td><code>pen.fillRect(200, 200, 20, 20)</code></td><td>在 (200, 200) 画一个 20×20 的实心矩形</td></tr>
+</table>
+
+<p>
+  <code>10 * 20 = 200</code> 的意思是：“第 10 格 × 每格 20 像素”。
+  这里我先写了 <code>10 * 20</code> 而不是直接写 200，是为了让你看清楚<b>格子</b>和<b>像素</b>的关系。
+  后面我们会用变量代替它。
+</p>
+
+<div class="wordlist">
+  <table>
+    <tr><td>get</td><td>获得</td><td>v.</td></tr>
+    <tr><td>element</td><td>元素</td><td>n.</td></tr>
+    <tr><td>byId</td><td>按 id（by = 依照）</td><td>—</td></tr>
+    <tr><td>getContext</td><td>获得上下文</td><td>—</td></tr>
+    <tr><td>2d</td><td>二维</td><td>n.</td></tr>
+    <tr><td>fillStyle</td><td>填充样式</td><td>n.</td></tr>
+    <tr><td>fillRect</td><td>填充矩形（rect = rectangle）</td><td>—</td></tr>
+  </table>
+</div>
+
+<div class="warn">
+  <b>常见坑 · 拿不到画笔</b>
+  <code>getContext("2d")</code> 里的 <b>2d 是小写</b>。写成 "2D" 会返回 null，然后你会在后面那句 paint 报错：“Cannot read properties of null”。
+  看到 “null” 这个词，就回来检查这里。
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step1.html">打开 step1.html 看看效果</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s2">第 2 步 · 让方块一格一格往前走</h2>
+
+<div class="step-title"><span>STEP 2</span>用变量表示“位置”<span class="filetag">step2.html</span></div>
+
+<p>
+  现在方块固定在 (10, 10)。想让它动，就要把“它在哪”变成一个<b>能改的数字</b>。
+  这个“能改的盒子”，在 JavaScript 里叫 <b>变量</b>（variable）。
+</p>
+
+<pre><code>const 每格 = 20;   // 一格 20 像素
+let 列 = 10;       // 第几列（横着数）
+let 行 = 8;        // 第几行（竖着数）
+
+// 让列往右走一格
+列 = 列 + 1;
+
+// 画的时候：像素 = 格数 × 20
+pen.fillRect(列 * 每格, 行 * 每格, 每格, 每格);</code></pre>
+
+<p>
+  <b>只是把“列”加 1，画面并不会自己变。</b>画布是一张静态的纸：
+  上次画在 (10,8) 的方块还留在原地。所以想要“动”，必须<b>先清空，再画新的</b>。
+</p>
+
+<p>完整代码：</p>
+<pre><code>&lt;script&gt;
+  const board = document.getElementById("board");
+  const pen = board.getContext("2d");
+
+  const CELL = 20;      // CELL = 格子，每格 20 像素
+  let col = 10;         // col = column，列
+  let row = 8;          // row，行
+
+  function draw() {
+    // 先擦掉整块画布
+    pen.clearRect(0, 0, board.width, board.height);
+
+    // 再画新的位置
+    pen.fillStyle = "#ff6b6b";
+    pen.fillRect(col * CELL, row * CELL, CELL, CELL);
+  }
+
+  draw();
+&lt;/script&gt;</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>variable</td><td>变量</td><td>n.</td></tr>
+    <tr><td>let</td><td>“让”，声明一个可以被改的变量</td><td>v.</td></tr>
+    <tr><td>const</td><td>constant 的缩写：常量，声明后不能改</td><td>n.</td></tr>
+    <tr><td>function</td><td>函数</td><td>n.</td></tr>
+    <tr><td>clearRect</td><td>清空矩形区域</td><td>—</td></tr>
+    <tr><td>column (col)</td><td>列</td><td>n.</td></tr>
+    <tr><td>row</td><td>行</td><td>n.</td></tr>
+    <tr><td>cell</td><td>格子</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>let 和 const 的区别</b>
+  要改的用 <b>let</b>，不会改的用 <b>const</b>。如果对 const 的变量重新赋值，浏览器会直接报错。
+  养成“能 const 就 const”的习惯，以后改代码会少很多意外。
+</div>
+
+<div class="story">
+  <b>小故事 · 为它改过两次名字的这个词</b>
+  <p>
+    “变量”（variable）这个词，最早来自数学家：它指的是“可以变的那种量”，比如 x、y。
+    1970 年前后，C 语言为它造了 <b>int</b> 这样的类型。
+    后来 JavaScript 借鉴了别的语言里的 <b>var</b>（variable 的缩写），但它有个有名的毛病：变量声明会被“偷偷提到”函数开头，很容易出错。
+  </p>
+  <p>
+    2015 年，JavaScript 大改版（ES6），一下子加进来 <b>let</b> 和 <b>const</b> 两个新词。
+    “let” 本意是“让 …… 发生”，写起来像一句英语：<code>let speed = 150;</code> ——
+    让速度等于 150。今天的代码里，几乎看不到 var 了。
+  </p>
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step2.html">打开 step2.html 看看效果</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s3">第 3 步 · 加一条尾巴，变成蛇</h2>
+
+<div class="step-title"><span>STEP 3</span>一串小方块排队<span class="filetag">step3.html</span></div>
+
+<p>
+  一条蛇，其实就是<b>一串有顺序的坐标</b>。第一个是头，后面的都是身体。
+  在 JavaScript 里，这种“一串东西”叫 <b>数组</b>（array），用方括号 <code>[ ]</code> 写出来。
+</p>
+
+<pre><code>// 蛇：[ {列, 行}, {列, 行}, ... ]
+const snake = [
+  { col: 10, row: 8 },   // 头在这里
+  { col: 9,  row: 8 },   // 身体
+  { col: 8,  row: 8 },   // 尾巴
+];
+
+// 画蛇：对蛇里的每一节，都画一个方块
+snake.forEach(function (part, index) {
+  // 头用亮一点的颜色，身体用暗一点的
+  pen.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
+  pen.fillRect(part.col * CELL, part.row * CELL, CELL, CELL);
+});</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>array</td><td>数组（一串有顺序的东西）</td><td>n.</td></tr>
+    <tr><td>index</td><td>序号（从 0 开始数）</td><td>n.</td></tr>
+    <tr><td>forEach</td><td>对每一个都做……</td><td>—</td></tr>
+    <tr><td>object</td><td>对象（用 { } 写的“东西”）</td><td>n.</td></tr>
+    <tr><td>type</td><td>类型（typeof 用来问它是哪种类型）</td><td>n.</td></tr>
+    <tr><td>number</td><td>数字</td><td>n.</td></tr>
+    <tr><td>string</td><td>字符串（用引号写的一串字）</td><td>n.</td></tr>
+    <tr><td>boolean</td><td>布尔值（true 真 / false 假）</td><td>n.</td></tr>
+    <tr><td>undefined</td><td>还没定义、不存在</td><td>adj.</td></tr>
+  </table>
+</div>
+
+<div class="warn">
+  <b>常见坑 · 数组序号从 0 开始</b>
+  <code>snake[0]</code> 是第一个（头），<code>snake[1]</code> 是第二个。
+  <b>不要从 1 数起</b>，几乎所有编程语言都从 0 开始。
+</div>
+
+<div class="story">
+  <b>小故事 · 为什么从 0 数起</b>
+  <p>
+    这个习惯可以追到 1960 年代的 C 语言（甚至是更早的机器码）。
+    当时内存里的每个位置本来就有编号，第一个位置的地址就是 "<b>起始地址 + 0</b>"。
+    如果第一项叫 "1"，那每次取第 n 项就得算 "起始地址 + (n - 1) × 每项大小"，白白多一步减法。
+  </p>
+  <p>
+    于是 C 语言直接让下标从 0 开始 —— 后来的 Java、Python、JavaScript 全继承了这个习惯。
+    今天的程序早就不在乎那一次减法了，但这个约定留了下来。
+  </p>
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step3.html">打开 step3.html 看看效果</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s4">第 4 步 · 让蛇听键盘的话</h2>
+
+<div class="step-title"><span>STEP 4</span>键盘事件<span class="filetag">step4.html</span></div>
+
+<p>
+  键盘的每一次按下，浏览器都会报告一个<b>事件</b>（event）。
+  想“听”这些事件，就要加一个<b>监听器</b>（listener）。
+</p>
+
+<pre><code>// 方向表：按键名 → 方向
+const DIRECTIONS = {
+  ArrowUp:    { col:  0, row: -1 },
+  ArrowDown:  { col:  0, row:  1 },
+  ArrowLeft:  { col: -1, row:  0 },
+  ArrowRight: { col:  1, row:  0 },
+};
+
+let direction = { ...DIRECTIONS.ArrowRight };   // 一开始向右走
+
+document.addEventListener("keydown", function (event) {
+  // event.key 就是按下的那个键的名字
+  const key = event.key;
+
+  if (DIRECTIONS[key]) {
+    direction = { ...DIRECTIONS[key] };
+  }
+});</code></pre>
+
+<p>逐句翻译：</p>
+<ul>
+  <li><code>document.addEventListener("keydown", ...)</code>：给整个文档加一个监听器，专门听 keydown（按键按下）这个事件。</li>
+  <li><code>event.key</code>：这次按下的键，方向键分别是 "ArrowUp" / "ArrowDown" / "ArrowLeft" / "ArrowRight"。</li>
+  <li><code>if (DIRECTIONS[key])</code>：如果这个键在方向表里，就切换方向；如果按的不是方向键（比如字母 x），就什么也不做。</li>
+</ul>
+
+<div class="wordlist">
+  <table>
+    <tr><td>event</td><td>事件</td><td>n.</td></tr>
+    <tr><td>listener</td><td>监听者（监听器）</td><td>n.</td></tr>
+    <tr><td>add</td><td>添加</td><td>v.</td></tr>
+    <tr><td>keydown</td><td>按键按下</td><td>n.</td></tr>
+    <tr><td>Arrow</td><td>箭头</td><td>n.</td></tr>
+    <tr><td>direction</td><td>方向</td><td>n.</td></tr>
+    <tr><td>spread</td><td>展开（三个点 ... 符号的名字）</td><td>v.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>... 那三个点是什么？</b>
+  <code>{ ...DIRECTIONS.ArrowRight }</code> 的意思是“把那个对象的属性<b>抄一份</b>出来”。
+  不能直接写 <code>direction = DIRECTIONS.ArrowRight</code>，因为那样两个名字会指向同一个对象，改一个另一个也会跟着变。
+  这里其实不太会出错（我们从不修改方向对象），但抄一份是好习惯，第 11 步你会看到它的用处。
+</div>
+
+<div class="story">
+  <b>小故事 · “监听器”这个比喻</b>
+  <p>
+    “事件监听”这个说法，来自一个真实生活中的类比：大家围坐在屋子里，谁发生了什么事，就“报”一声，其他人都能听到。
+    浏览器里发生的每一件小事 —— 鼠标点了、键盘按了、窗口大小变了 —— 都会“报”一声。
+  </p>
+  <p>
+    早期的浏览器里，这件事叫 <b>onclick</b>（“在……上点”），只能挂一个。
+    后来大家发现一个页面上可能有很多东西关心同一个事件，于是有了 <b>addEventListener</b>（添加事件监听者）：
+    可以挂很多个，互不打扰，还可以用 removeEventListener（移除监听者）摘下来。
+  </p>
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step4.html">打开 step4.html 看看效果（按方向键，方块会跳）</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s5">第 5 步 · 自动跑起来</h2>
+
+<div class="step-title"><span>STEP 5</span>让蛇自己往前走、撞墙停下<span class="filetag">step5.html</span></div>
+
+<p>现在蛇能在按键后挪一格，但不会自己跑。到这一步，游戏循环正式登场。</p>
+
+<pre><code>let speed = 150;       // 每 150 毫秒走一格
+let lastMove = 0;      // 上一次“走”的时间
+
+function move() {
+  const head = snake[0];
+  const next = {
+    col: head.col + direction.col,
+    row: head.row + direction.row,
+  };
+
+  // 把新头插到最前面，把旧尾巴去掉
+  snake.unshift(next);
+  snake.pop();
+  // 注意：这里先不加食物！到第 8 步再说。
+}
+
+function loop(now) {
+  // 看看现在距离上次走，够不够一个 speed
+  if (now - lastMove &gt;= speed) {
+    move();
+    lastMove = now;
+    draw();
+  }
+  requestAnimationFrame(loop);   // 告诉浏览器：下次再叫我
+}
+
+requestAnimationFrame(loop);</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>unshift</td><td>在“前面”放进去</td><td>—</td></tr>
+    <tr><td>pop</td><td>弹出（把“最后一个”拿出来）</td><td>v.</td></tr>
+    <tr><td>push</td><td>压入（在“最后”加一个）</td><td>v.</td></tr>
+    <tr><td>shift</td><td>把“第一个”拿出来</td><td>v.</td></tr>
+    <tr><td>head</td><td>头</td><td>n.</td></tr>
+    <tr><td>tail</td><td>尾巴</td><td>n.</td></tr>
+    <tr><td>next</td><td>下一个</td><td>adj.</td></tr>
+    <tr><td>currently</td><td>当前</td><td>adv.</td></tr>
+    <tr><td>millisecond</td><td>毫秒（ms）</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>新头的“出生”，和旧尾巴的“死亡”</b>
+  先 <b>unshift</b>（在头前面插一格）→ 再 <b>pop</b>（把尾巴那一格扔掉）。
+  蛇的长度不变，看起来就是“往前爬了一格”。
+  到第 8 步加食物时，你只要在 <b>pop 前面</b> 判断一下“这格有食物吗”，有就不 pop。
+</div>
+
+<div class="warn">
+  <b>常见坑 · now 是个什么数</b>
+  <code>requestAnimationFrame(loop)</code> 会自动把“从打开页面到现在的毫秒数”作为参数传给 loop。
+  这个数很大（几十万、几百万），所以一开始要设 <code>lastMove = 0</code>，它会立刻跑一次，你就能马上看到画面。
+</div>
+
+<div class="story">
+  <b>小故事 · 1976 年，贪吃蛇本来叫“封锁”</b>
+  <p>
+    第一只“贪吃蛇”出现在 1976 年，是一款街机游戏，名字叫 <b>Blockade</b>（封锁）。
+    玩法很简单：屏幕上用箭头控制一条线，走过的地方会留下痕迹，谁先撞到任何东西谁就输。
+  </p>
+  <p>
+    后来这个玩法被一次次“改造”（很多开发者没有申请专利），慢慢变成了今天的样子：撞墙要死，撞到自己要死，吃到食物会变长 ——
+    就像我们今天玩的这样。1998 年，诺基亚手机把它装进了 3310，取名叫 “Snake”，从那以后，它就成了全世界很多人人生中的第一个游戏。
+  </p>
+  <p>
+    所以你现在玩的这个版本，其实已经比 1976 年那一版“进化”了很多。
+  </p>
+</div>
+
+<div class="warn">
+  <b>注意：第 5 步里撞墙先不处理</b>
+  蛇会“走出画面”，因为画布外面没有东西可画，看起来就是消失了。
+  别急，第 6 步来处理。
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step5.html">打开 step5.html 看看效果</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s6">第 6 步 · 撞墙了怎么办</h2>
+
+<div class="step-title"><span>STEP 6</span>用“状态”决定游戏是否结束<span class="filetag">step6.html</span></div>
+
+<p>
+  游戏需要一个“它现在在干什么”的标记。我们叫它 <b>status</b>（状态）。
+  状态的取值只有几种：<code>"playing"</code>（玩着）、<code>"over"</code>（结束了）。
+</p>
+
+<pre><code>const BOARD_SIZE = 24;           // 24 行、24 列（480 ÷ 20 = 24）
+let status = "playing";
+
+function update() {
+  const head = snake[0];
+  const next = {
+    col: head.col + direction.col,
+    row: head.row + direction.row,
+  };
+
+  // 撞墙检测：有没有超出 0 ~ 23 的范围？
+  if (
+    next.col &lt; 0 || next.col &gt;= BOARD_SIZE ||
+    next.row &lt; 0 || next.row &gt;= BOARD_SIZE
+  ) {
+    status = "over";
+    return;                       // 结束，不再往下走
+  }
+
+  snake.unshift(next);
+  snake.pop();
+}
+</code></pre>
+
+<h3>这两个符号</h3>
+<table class="compare">
+  <tr><th>符号</th><th>读法</th><th>意思</th></tr>
+  <tr><td><code>&lt;</code></td><td>less than</td><td>小于</td></tr>
+  <tr><td><code>&gt;=</code></td><td>greater than or equal</td><td>大于或等于</td></tr>
+  <tr><td><code>||</code></td><td>or</td><td>或者（任何一边成立就算成立）</td></tr>
+  <tr><td><code>&amp;&amp;</code></td><td>and</td><td>并且（两边都成立才算）</td></tr>
+  <tr><td><code>!==</code></td><td>not equal</td><td>不等于</td></tr>
+  <tr><td><code>return</code></td><td>返回</td><td>立刻离开这个函数，后面的表都不做了</td></tr>
+</table>
+
+<div class="wordlist">
+  <table>
+    <tr><td>status</td><td>状态</td><td>n.</td></tr>
+    <tr><td>playing</td><td>正在游戏</td><td>v.</td></tr>
+    <tr><td>over</td><td>结束了</td><td>adv.</td></tr>
+    <tr><td>greater than</td><td>大于</td><td>—</td></tr>
+    <tr><td>less than</td><td>小于</td><td>—</td></tr>
+    <tr><td>equal</td><td>相等的</td><td>adj.</td></tr>
+    <tr><td>return</td><td>返回</td><td>v.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>为什么用字符串 "playing" 而不是数字 0、1？</b>
+  因为字符串是“给人看的”。半年后你翻回代码，看到 <code>status === "over"</code>，
+  一眼就能知道自己想的是什么；看到 <code>status === 1</code>，就得再查一次 1 代表什么。
+  这种“给人看懂”的写法，比省几个字重要得多。
+</div>
+
+<div class="story">
+  <b>小故事 · 游戏开发者的“状态机”</b>
+  <p>
+    在游戏行业里，“游戏有几种状态、状态之间怎么切换”，有一个专门的词叫 <b>finite state machine</b>（有限状态机）。
+    这个名字还很新，但想法在早期程序里就有：比如电梯有“上楼、下楼、停住”三种状态，从“上楼”切到“停住”要按开门。
+  </p>
+  <p>
+    到今天，几乎所有游戏 —— 包括你手机里那些大制作 —— 都是这样：
+    <b>开始页 → 游戏中 → 暂停 → 游戏结束</b>。你的贪吃蛇，状态是 "playing" 和 "over" 两个；如果加上暂停，就是三个。
+  </p>
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step6.html">打开 step6.html 看看效果（撞墙后蛇就停止移动）</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s7">第 7 步 · 加上食物</h2>
+
+<div class="step-title"><span>STEP 7</span>随机位置的食物<span class="filetag">step7.html</span></div>
+
+<p>食物的位置每次都是随机的。生成随机数要用 <code>Math.random()</code>（Math = 数学，random = 随机）：</p>
+
+<pre><code>let food = { col: 5, row: 5 };
+
+function placeFood() {
+  // Math.random() 给出 0 到 1 之间的小数
+  // × 24 后是 0 到 23.99……，Math.floor 向下取整 → 0 到 23 的整数
+  food = {
+    col: Math.floor(Math.random() * BOARD_SIZE),
+    row: Math.floor(Math.random() * BOARD_SIZE),
+  };
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>random</td><td>随机的</td><td>adj.</td></tr>
+    <tr><td>Math</td><td>数学</td><td>n.</td></tr>
+    <tr><td>floor</td><td>地板（向下取整）</td><td>n./v.</td></tr>
+    <tr><td>round</td><td>四舍五入</td><td>v.</td></tr>
+    <tr><td>ceil</td><td>天花板（向上取整）</td><td>n.</td></tr>
+    <tr><td>place</td><td>放置</td><td>v.</td></tr>
+    <tr><td>position</td><td>位置</td><td>n.</td></tr>
+  </table>
+</div>
+
+<p>
+  <b>Math.floor</b>（向下取整）和 <b>Math.round</b>（四舍五入）很容易混。
+  想想它们的名字：floor 是地板，往下掉；ceil 是 ceiling（天花板），往上顶。
+</p>
+
+<div class="story">
+  <b>小故事 · 为什么是“伪”随机</b>
+  <p>
+    计算机其实不会“随机”。你给 <b>Math.random</b> 要一个数，它内部其实是在一个很长的公式上往前走一步，
+    算出看起来毫无规律数，但只要你拿到起点，就能算出后面每一个数。所以这种随机叫 <b>伪随机</b>（pseudo-random）。
+  </p>
+  <p>
+    为什么不用真的？因为便宜 —— 伪随机数算得飞快，而且大多数游戏、抽奖、加密之外的地方，根本分不出差别。
+    （安全相关的随机，比如生成密钥，就不用这个了。）
+  </p>
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step7.html">打开 step7.html 看看效果（红点在随机位置出现）</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s8">第 8 步 · 吃到食物就变长</h2>
+
+<div class="step-title"><span>STEP 8</span>吃到就变长，然后放新的食物<span class="filetag">step8.html</span></div>
+
+<p>
+  食物在 (x, y)，蛇的头也在 (x, y) 吗？如果都在，就是<b>吃到了</b>。
+  吃到以后，<b>不 pop 掉尾巴</b>，蛇就长了一格。
+</p>
+
+<pre><code>snake.unshift(next);              // 新头加进来
+
+const headIsOnFood = next.col === food.col &amp;&amp; next.row === food.row;
+if (headIsOnFood) {
+  score += 10;                    // 得分 +10
+  placeFood();                    // 食物换个位置
+  // 注意：这里没有 pop！
+} else {
+  snake.pop();                    // 没吃到，尾巴照常去掉
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>score</td><td>分数</td><td>n.</td></tr>
+    <tr><td>textContent</td><td>文字内容（用来改页面上的文字）</td><td>n.</td></tr>
+    <tr><td>grow</td><td>生长</td><td>v.</td></tr>
+    <tr><td>increase</td><td>增加</td><td>v.</td></tr>
+  </table>
+</div>
+
+<div class="warn">
+  <b>常见坑 · 分数显示没更新</b>
+  改了 <code>score</code> 变量，不代表页面上的字会跟着变。
+  必须用 <code>document.getElementById("score").textContent = "得分：" + score;</code>
+  把新数字“推”到页面上。游戏画面同样如此 —— 变量改了以后，必须重新 draw。
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step8.html">打开 step8.html 看看效果（现在能吃了！）</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s9">第 9 步 · 咬到自己也要结束</h2>
+
+<div class="step-title"><span>STEP 9</span>“撞到自己”检测<span class="filetag">step9.html</span></div>
+
+<p>检查新头有没有落在蛇身体的任何一格上（包括头自己）：</p>
+
+<pre><code>// 有没有某一节蛇和 next 落在同一格？
+const hitSelf = snake.some(function (part) {
+  return part.col === next.col &amp;&amp; part.row === next.row;
+});
+
+if (hitSelf) {
+  status = "over";
+  return;
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>some</td><td>有一些（“里面至少有一个”）</td><td>pron.</td></tr>
+    <tr><td>every</td><td>每一个（“全都满足”）</td><td>pron.</td></tr>
+    <tr><td>find</td><td>找到</td><td>v.</td></tr>
+    <tr><td>filter</td><td>过滤（挑出符合条件的）</td><td>v.</td></tr>
+    <tr><td>hit</td><td>碰到</td><td>v.</td></tr>
+    <tr><td>self</td><td>自己</td><td>pron.</td></tr>
+    <tr><td>collision</td><td>碰撞</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>数组的四个“检查工具”</b><br>
+  <b>forEach</b>：每一项都做一件事<br>
+  <b>some</b>：有没有<b>至少一个</b>符合？（返回 true / false）<br>
+  <b>every</b>：是不是<b>全都</b>符合？（返回 true / false）<br>
+  <b>find</b>：找<b>第一个</b>符合的，找到就返回它<br>
+  这四个记住一个，另外几个看名字就能猜到。
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step9.html">打开 step9.html 看看效果（现在游戏完整了）</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s10">第 10 步 · 让它变好看</h2>
+
+<div class="step-title"><span>STEP 10</span>打开页、结束页、配色<span class="filetag">step10.html</span></div>
+
+<p>
+  规则已经完整了，但它只认按键、不会显示“游戏结束”和“按 R 重开”。
+  这一步，我们用之前学的 HTML + CSS 把“开始页”“结束页”叠到画布上。
+</p>
+
+<h3>HTML 结构：画布 + 一层遮罩 + 一个舞台</h3>
+<pre><code>&lt;div class="stage"&gt;
+  &lt;canvas id="board" width="480" height="480"&gt;&lt;/canvas&gt;
+
+  &lt;!-- 分数和最高分 --&gt;
+  &lt;div class="hud"&gt;
+    &lt;span id="score"&gt;得分：0&lt;/span&gt;
+    &lt;span id="best"&gt;最高：0&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;!-- 开始页 / 结束页 --&gt;
+  &lt;div id="overlay" class="overlay"&gt;
+    &lt;h2 id="overlayTitle"&gt;贪吃蛇&lt;/h2&gt;
+    &lt;p&gt;用方向键控制，按空格开始&lt;/p&gt;
+    &lt;button id="startButton"&gt;开始游戏&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+<h3>CSS 关键：把遮罩层盖在画布上</h3>
+<pre><code>.stage {
+  position: relative;       /* 我里面这些孩子，都以我为准来摆 */
+  width: 480px;
+}
+
+.overlay {
+  position: absolute;       /* 贴着 .stage 摆 */
+  inset: 0;                 /* 上下左右都贴边：inset 是“嵌入” */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 17, 21, .78);
+  border-radius: 8px;
+}
+
+.overlay.hidden {
+  display: none;            /* 隐藏：这一页就不见了 */
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>stage</td><td>舞台</td><td>n.</td></tr>
+    <tr><td>overlay</td><td>覆盖层、遮罩</td><td>n.</td></tr>
+    <tr><td>inset</td><td>嵌入（上下左右都贴边）</td><td>adj.</td></tr>
+    <tr><td>hidden</td><td>隐藏的</td><td>adj.</td></tr>
+    <tr><td>hud</td><td>Heads-Up Display：平视显示，屏幕上的分数计时等</td><td>n.</td></tr>
+    <tr><td>button</td><td>按钮</td><td>n.</td></tr>
+    <tr><td>title</td><td>标题</td><td>n.</td></tr>
+  </table>
+</div>
+
+<h3>JavaScript：通过加/删 class 来切换页面</h3>
+<pre><code>// 用 classList 切换：
+// ell.classList.add("hidden")       → 隐藏结束页
+// ell.classList.remove("hidden")    → 显示结束页
+const overlay = document.getElementById("overlay");
+
+function showOverlay(title, text) {
+  document.getElementById("overlayTitle").textContent = title;
+  overlay.querySelector("p").textContent = text;
+  overlay.classList.remove("hidden");
+}
+
+function hideOverlay() {
+  overlay.classList.add("hidden");
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>classList</td><td>类列表（元素上的一串 class）</td><td>n.</td></tr>
+    <tr><td>querySelector</td><td>查询选择器（按 CSS 规则找一个元素）</td><td>—</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>classList 和 querySelector</b>
+  <b>classList.add / remove / toggle</b>：把 class 加上 / 拿掉 / 切换。
+  <b>toggle</b>（切换）最常用：有就去掉，没有就加上，一句顶两句。
+  <b>querySelector</b> 用的是 CSS 的选择器写法，比如 <code>overlay.querySelector("p")</code> 意思是“在 overlay 里面找第一个 p”。
+</div>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step10.html">打开 step10.html 看看效果</a></p>
+
+<!-- ============================================================ -->
+<h2 id="s11">第 11 步 · 补上“缓冲方向”这个小坑</h2>
+
+<div class="step-title"><span>STEP 11</span>那个“按太快会自杀”的问题<span class="filetag">step11.html</span></div>
+
+<p>
+  回到第 4 步。我们的代码是“一按键，马上改方向”。这看起来没问题，但有一个<b>很多老教程都没讲的坑</b>：
+</p>
+
+<div class="warn">
+  <b>坑 · 按得太快会“自杀”</b>
+  蛇正在向<b>右</b>走（每秒 10 步）。
+  <p>你在<b>同一秒里</b>先按 <b>↑</b>，再按 <b>←</b>。</p>
+  第一下：方向变成“上”，但蛇还没机会走一步；<br>
+  第二下：方向又变成“左”。<br>
+  于是蛇的下一步直接往左，撞进了自己的身体 —— 你明明没有按错，却死了。
+</div>
+
+<div class="story">
+  <b>小故事 · 那个让我抓狂的 180 度转身</b>
+  <p>
+    很多贪吃蛇教程都会加一句：“不能按和当前方向相反的方向”。比如往右走时，按左键就忽略。
+  </p>
+  <p>
+    但光有这一句是不够的：它只防住了“立刻掉头”，防不住“按两下、拐错弯”。
+    我当年就是在一分钟里连死了三次，才开始怀疑代码。后来想明白了：
+    <b>问题不在“哪个方向不能按”，而在于“方向改得太早了”</b>。
+  </p>
+</div>
+
+<h3>解决办法：加一个“方向缓冲”</h3>
+<p>
+  按方向键时，<b>不直接改方向</b>，而是先把它记在一个“等待表”里（叫 <b>nextDirection</b>，下一个方向）。
+  等蛇<b>真的走了一步</b>之后，才把等待表里的方向“装”上去。
+</p>
+
+<pre><code>let direction = { col: 1, row: 0 };      // 现在走的方向
+let nextDirection = { col: 1, row: 0 };  // 下一次要走的方向
+
+document.addEventListener("keydown", function (event) {
+  const wanted = DIRECTIONS[event.key];
+  if (!wanted) return;
+
+  // 规则：新方向不能和“上一步已经走过的方向”相反，也不能和它一样
+  const isOpposite =
+    wanted.col === -direction.col &amp;&amp; wanted.row === -direction.row;
+  const isSame =
+    wanted.col === direction.col &amp;&amp; wanted.row === direction.row;
+
+  if (!isOpposite &amp;&amp; !isSame) {
+    nextDirection = wanted;   // 先记下来，等走一步再装
+  }
+});
+
+function update() {
+  direction = nextDirection;   // 走一步之前，先把等待的方向装上
+  ...
+}</code></pre>
+
+<p>这里的 <b>wanted</b>（想要的方向）、<b>isOpposite</b>（是否相反）、<b>isSame</b>（是否相同）都是我自己起的名字。
+起得越像英语句子，以后越好读。</p>
+
+<p><a class="demo-link" href="贪吃蛇_步骤/step11.html">打开 step11.html 看看效果（现在快速连按↑←也不会死）</a></p>
+
+<div class="note">
+  <b>为什么这件事值得单独讲</b>
+  好的游戏，光“能跑”还不够，还要“手感对”。
+  你以后会不断遇到这种问题：规则没错，但玩起来不对劲。这时候就去<b>拆解</b>：
+  是哪一毫秒你的意图被丢了？从那里下手。
+</div>
+
+<div class="story">
+  <b>小故事 · “手感”是个专业词：game feel</b>
+  <p>
+    游戏设计师把“按键与角色反应之间那一点点微妙的感觉”叫 <b>game feel</b>（游戏手感）。
+    它没有标准答案，但有很多真经验：跳跃时按住越久跳得越高、被击中时屏幕抖一下、吃食物时闪一下 ——
+    这些都不是游戏规则的一部分，却决定了你玩得爽不爽。
+  </p>
+  <p>
+    你做的贪吃蛇里，也可以加一点：吃食物时格子弹一下，结束时画面抖一下。这些都要等你做完基础版再慢慢加。
+  </p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="features">加餐 · 暂停、空格暂停、最高分</h2>
+
+<p>最终版里还多了四件小事，都很好懂：</p>
+
+<table class="compare">
+  <tr><th>功能</th><th>核心代码</th><th>翻译</th></tr>
+  <tr><td>空格暂停/继续</td><td><code>if (event.key === " ") { togglePause(); }</code></td><td>如果按的是空格，就切换暂停</td></tr>
+  <tr><td>敲 R 重开</td><td><code>if (event.key.toLowerCase() === "r") { restart(); }</code></td><td>按的键是 r（转成小写再比）</td></tr>
+  <tr><td>最高分保存</td><td><code>localStorage.setItem("snake-best", best);</code></td><td>把最高分放进“本地存储”</td></tr>
+  <tr><td>防止方向键滚页面</td><td><code>event.preventDefault();</code></td><td>阻止浏览器的默认行为</td></tr>
+</table>
+
+<pre><code>// 最高分：读出来
+let best = Number(localStorage.getItem("snake-best")) || 0;
+// 最高分：存进去
+if (score &gt; best) {
+  best = score;
+  localStorage.setItem("snake-best", best);
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>localStorage</td><td>本地存储（关掉网页也还在）</td><td>n.</td></tr>
+    <tr><td>getItem / setItem</td><td>取出 / 存入一个项目</td><td>—</td></tr>
+    <tr><td>prevent</td><td>阻止</td><td>v.</td></tr>
+    <tr><td>default</td><td>默认的</td><td>adj.</td></tr>
+    <tr><td>toggle</td><td>切换（开↔关）</td><td>v.</td></tr>
+    <tr><td>pause / resume</td><td>暂停 / 继续</td><td>v.</td></tr>
+    <tr><td>restart</td><td>重新开始</td><td>v.</td></tr>
+    <tr><td>toLowerCase</td><td>转成小写</td><td>—</td></tr>
+    <tr><td>Number</td><td>数字（把文字转成数字）</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>localStorage 是什么</b>
+  浏览器里有一块小仓库，每个网站自己有一套，<b>关掉浏览器也不会丢</b>。
+  它只能存“文字”（字符串），所以取出来的数字要用 <code>Number( )</code> 转回来。
+  这个仓库每次只能放一条，我们用名字 "snake-best" 来标记它。
+</div>
+
+<div class="story">
+  <b>小故事 · 那个让网页能“自己干活”的函数</b>
+  <p>
+    JavaScript 诞生于 1995 年。当时网景（Netscape）公司想让网页能响应用户操作，找来了 Brendan Eich（布兰登·艾克），
+    他用了大约 <b>10 天</b>就写出了第一版原型，最初叫 Mocha（摩卡），后来改成 LiveScript，最后为了让市场更接受，
+    改名成 <b>JavaScript</b>。
+  </p>
+  <p>
+    名字里带 Java，其实和当时热门的 Java 语言关系不大，更多是为了借它的名气。
+    但这个“顺手”起出来的名字，让人们以为它只是给网页加点小特效的玩具。
+    十几年后，跑到浏览器里的东西越来越多，才有人认真对待它。
+    今天你玩的这个贪吃蛇，用的就是它。
+  </p>
+</div>
+
+<!-- ============================================================ -->
+<h2>做完以后，去哪里</h2>
+<ol>
+  <li><b>改配色</b>：把 <code>#4ade80</code> 换成别的颜色，重新加载，看你自己设计的蛇。</li>
+  <li><b>改速度</b>：把 <code>speed = 150</code> 改成 100，游戏会立刻变难。</li>
+  <li><b>加功能</b>：暂停已经做了；试着再加一个“得分越高，食物越亮”的效果。</li>
+  <li><b>看别人的</b>：到 GitHub 上搜 snake game canvas，看别人是怎么写的，对比一下思路。</li>
+</ol>
+
+<div class="ok">
+  <b>完整代码去哪看</b>
+  <a href="贪吃蛇_最终版.html">贪吃蛇_最终版.html</a> 就是 step11 加上暂停、最高分这些加餐后的完整代码，每个函数前都有中文注释。
+  <a href="index.html#glossary">目录页的速查卡</a> 里还有一张 JavaScript 常用词表，遇到不认识的单词可以随时查。
+  建议<b>先照着步骤一步步抄</b>，每个步骤都跑起来，再去读完整版。
+  一步到位地复制粘贴，容易不知道自己抄的是什么。
+</div>
+
+<div class="foot">
+  <p>← 上一篇：<a href="第5-9章_CSS基础.html">第 5 — 9 章 · CSS 基础</a> ｜ 下一篇：<a href="贪吃蛇_最终版.html">贪吃蛇_最终版.html</a>（完整成品）</p>
+  <p>遇到不懂的地方，回到 <a href="index.html">目录页</a> 的“常见错误”和“速查卡”里查一查。</p>
+</div>
+
+</body>
+</html>
