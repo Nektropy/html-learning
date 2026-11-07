@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>样板 · 卡片</title>
+  <style>
+    /* 第一句：让宽高包含边框和内边距 */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 16px;
+      background: #eef2f7;
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    .card {
+      width: 320px;
+      margin: 0 auto;              /* 水平居中 */
+      padding: 24px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .12);
+      display: flex;               /* 让里面的东西竖向排列 */
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #1f2328;
+    }
+
+    .card p {
+      margin: 0;
+      color: #667085;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .card .tag {
+      align-self: flex-start;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #eef4ff;
+      color: #1a6dff;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <span class="tag">练习</span>
+    <h2>一张简单的卡片</h2>
+    <p>
+      这一张卡片用到了：选择器、盒子模型、圆角、阴影、flex 布局。
+      试着改一改它，看看每个属性都管什么。
+    </p>
+  </div>
+
+</body>
+</html>
