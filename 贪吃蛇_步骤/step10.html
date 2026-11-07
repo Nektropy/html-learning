@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第10步：打开页、结束页、配色</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+      color: #e6e8eb;
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    /* 舞台：画布和遮罩层都放在这里 */
+    .stage {
+      position: relative;
+      width: 480px;
+    }
+
+    #board {
+      display: block;
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+
+    /* 分数显示 */
+    .hud {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #cbd5e1;
+      pointer-events: none;   /* 别挡住鼠标点击 */
+    }
+
+    /* 遮罩层：盖在画布上面 */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 17, 21, .82);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .overlay h2 {
+      margin: 0;
+      font-size: 34px;
+      color: #4ade80;
+      letter-spacing: 4px;
+    }
+
+    .overlay p {
+      margin: 0;
+      color: #9aa4b2;
+      font-size: 14px;
+    }
+
+    .overlay button {
+      padding: 9px 26px;
+      border: none;
+      border-radius: 999px;
+      background: #4ade80;
+      color: #0f1115;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .overlay.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <canvas id="board" width="480" height="480"></canvas>
+
+    <div class="hud">
+      <span id="score">得分：0</span>
+      <span id="best">最高：0</span>
+    </div>
+
+    <div id="overlay" class="overlay">
+      <h2 id="overlayTitle">贪吃蛇</h2>
+      <p id="overlayText">用方向键控制，吃到红点越长越长</p>
+      <button id="startButton">开始游戏</button>
+    </div>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const pen = board.getContext("2d");
+
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayText = document.getElementById("overlayText");
+    const startButton = document.getElementById("startButton");
+    const scoreText = document.getElementById("score");
+
+    const CELL = 20;
+    const BOARD_SIZE = 24;
+
+    const DIRECTIONS = {
+      ArrowUp:    { col:  0, row: -1 },
+      ArrowDown:  { col:  0, row:  1 },
+      ArrowLeft:  { col: -1, row:  0 },
+      ArrowRight: { col:  1, row:  0 },
+    };
+
+    let snake = [];
+    let direction = { ...DIRECTIONS.ArrowRight };
+    let status = "ready";      // ready（准备） / playing / over
+    let score = 0;
+    let food = { col: 5, row: 5 };
+    let best = 0;
+    let speed = 150;
+    let lastMove = 0;
+
+    // ---------- 界面切换 ----------
+    function showOverlay(title, text, buttonLabel) {
+      overlayTitle.textContent = title;
+      overlayText.textContent = text;
+      startButton.textContent = buttonLabel;
+      overlay.classList.remove("hidden");
+    }
+
+    function hideOverlay() {
+      overlay.classList.add("hidden");
+    }
+
+    // ---------- 游戏准备 ----------
+    function resetGame() {
+      snake = [
+        { col: 10, row: 8 },
+        { col: 9,  row: 8 },
+        { col: 8,  row: 8 },
+      ];
+      direction = { ...DIRECTIONS.ArrowRight };
+      score = 0;
+      speed = 150;
+      scoreText.textContent = "得分：0";
+      placeFood();
+      draw();
+    }
+
+    function placeFood() {
+      food = {
+        col: Math.floor(Math.random() * BOARD_SIZE),
+        row: Math.floor(Math.random() * BOARD_SIZE),
+      };
+    }
+
+    function startGame() {
+      resetGame();
+      status = "playing";
+      lastMove = 0;          // 0 表示“还没走过”，第一步会立刻走
+      hideOverlay();
+    }
+
+    function endGame() {
+      status = "over";
+      if (score > best) best = score;
+      document.getElementById("best").textContent = "最高：" + best;
+      showOverlay("游戏结束", "这一局得分：" + score, "再玩一次");
+    }
+
+    // ---------- 画 ----------
+    function draw() {
+      pen.clearRect(0, 0, board.width, board.height);
+
+      snake.forEach(function (part, index) {
+        pen.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
+        pen.fillRect(part.col * CELL + 1, part.row * CELL + 1, CELL - 2, CELL - 2);
+      });
+
+      pen.fillStyle = "#ff6b6b";
+      pen.beginPath();
+      pen.arc(
+        food.col * CELL + CELL / 2,
+        food.row * CELL + CELL / 2,
+        CELL / 2 - 3,
+        0,
+        Math.PI * 2
+      );
+      pen.fill();
+    }
+
+    // ---------- 算 ----------
+    function update() {
+      const head = snake[0];
+      const next = {
+        col: head.col + direction.col,
+        row: head.row + direction.row,
+      };
+
+      if (
+        next.col < 0 || next.col >= BOARD_SIZE ||
+        next.row < 0 || next.row >= BOARD_SIZE
+      ) {
+        endGame();
+        return;
+      }
+
+      const hitSelf = snake.some(function (part) {
+        return part.col === next.col && part.row === next.row;
+      });
+      if (hitSelf) {
+        endGame();
+        return;
+      }
+
+      snake.unshift(next);
+
+      const headIsOnFood = next.col === food.col && next.row === food.row;
+      if (headIsOnFood) {
+        score += 10;
+        scoreText.textContent = "得分：" + score;
+        placeFood();
+      } else {
+        snake.pop();
+      }
+    }
+
+    // ---------- 游戏循环 ----------
+    function loop(now) {
+      if (status === "playing" && now - lastMove >= speed) {
+        update();
+        lastMove = now;
+        draw();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    // ---------- 交互 ----------
+    document.addEventListener("keydown", function (event) {
+      const wanted = DIRECTIONS[event.key];
+      if (wanted) direction = { ...wanted };
+    });
+
+    startButton.addEventListener("click", startGame);
+
+    // 页面一打开：先摆好蛇，显示开始页
+    resetGame();
+    status = "ready";
+    showOverlay("贪吃蛇", "用方向键控制，吃到红点越长越长", "开始游戏");
+
+    requestAnimationFrame(loop);
+  </script>
+
+</body>
+</html>

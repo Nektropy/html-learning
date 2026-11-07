@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第11步：方向缓冲（先做对，再变好看）</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      background: #0f1115;
+      color: #e6e8eb;
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    #score { font-size: 18px; font-weight: bold; }
+
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="score">得分：0</div>
+  <canvas id="board" width="480" height="480"></canvas>
+
+  <script>
+    const board = document.getElementById("board");
+    const pen = board.getContext("2d");
+
+    const CELL = 20;
+    const BOARD_SIZE = 24;
+
+    const snake = [
+      { col: 10, row: 8 },
+      { col: 9,  row: 8 },
+      { col: 8,  row: 8 },
+    ];
+
+    const DIRECTIONS = {
+      ArrowUp:    { col:  0, row: -1 },
+      ArrowDown:  { col:  0, row:  1 },
+      ArrowLeft:  { col: -1, row:  0 },
+      ArrowRight: { col:  1, row:  0 },
+    };
+
+    let direction = { ...DIRECTIONS.ArrowRight };      // 现在走的方向
+    let nextDirection = { ...DIRECTIONS.ArrowRight };  // 下一步要走的方向
+
+    let status = "playing";
+    let score = 0;
+    let food = { col: 5, row: 5 };
+
+    function placeFood() {
+      food = {
+        col: Math.floor(Math.random() * BOARD_SIZE),
+        row: Math.floor(Math.random() * BOARD_SIZE),
+      };
+    }
+
+    placeFood();
+
+    // ---- 键盘：只记录“想要的方向”，不马上改 direction ----
+    document.addEventListener("keydown", function (event) {
+      const wanted = DIRECTIONS[event.key];
+      if (!wanted) return;
+
+      const isOpposite =
+        wanted.col === -direction.col && wanted.row === -direction.row;
+      const isSame =
+        wanted.col === direction.col && wanted.row === direction.row;
+
+      if (!isOpposite && !isSame) {
+        nextDirection = wanted;
+      }
+    });
+
+    function draw() {
+      pen.clearRect(0, 0, board.width, board.height);
+
+      snake.forEach(function (part, index) {
+        pen.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
+        pen.fillRect(part.col * CELL, part.row * CELL, CELL, CELL);
+      });
+
+      pen.fillStyle = "#ff6b6b";
+      pen.fillRect(food.col * CELL, food.row * CELL, CELL, CELL);
+    }
+
+    let speed = 150;
+    let lastMove = 0;
+
+    function update() {
+      // 走一步之前，才把“等待的方向”装上去
+      direction = nextDirection;
+
+      const head = snake[0];
+      const next = {
+        col: head.col + direction.col,
+        row: head.row + direction.row,
+      };
+
+      if (
+        next.col < 0 || next.col >= BOARD_SIZE ||
+        next.row < 0 || next.row >= BOARD_SIZE
+      ) {
+        status = "over";
+        return;
+      }
+
+      const hitSelf = snake.some(function (part) {
+        return part.col === next.col && part.row === next.row;
+      });
+      if (hitSelf) {
+        status = "over";
+        return;
+      }
+
+      snake.unshift(next);
+
+      const headIsOnFood = next.col === food.col && next.row === food.row;
+      if (headIsOnFood) {
+        score += 10;
+        document.getElementById("score").textContent = "得分：" + score;
+        placeFood();
+      } else {
+        snake.pop();
+      }
+    }
+
+    function loop(now) {
+      if (status === "playing" && now - lastMove >= speed) {
+        update();
+        lastMove = now;
+        draw();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+    draw();
+  </script>
+
+</body>
+</html>

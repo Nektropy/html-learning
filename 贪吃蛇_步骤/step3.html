@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第3步：一串方块变成蛇</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+    }
+
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="board" width="480" height="480"></canvas>
+
+  <script>
+    const board = document.getElementById("board");
+    const pen = board.getContext("2d");
+
+    const CELL = 20;
+
+    // 蛇：一串有顺序的坐标，snake[0] 是头
+    const snake = [
+      { col: 10, row: 8 },   // 头
+      { col: 9,  row: 8 },   // 身体
+      { col: 8,  row: 8 },   // 尾巴
+    ];
+
+    function draw() {
+      pen.clearRect(0, 0, board.width, board.height);
+
+      snake.forEach(function (part, index) {
+        // index 为 0 的是头，用亮绿色；其他用深一点的绿色
+        pen.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
+        pen.fillRect(part.col * CELL, part.row * CELL, CELL, CELL);
+      });
+    }
+
+    draw();
+  </script>
+
+</body>
+</html>

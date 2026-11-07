@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第7步：随机位置的食物</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+    }
+
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="board" width="480" height="480"></canvas>
+
+  <script>
+    const board = document.getElementById("board");
+    const pen = board.getContext("2d");
+
+    const CELL = 20;
+    const BOARD_SIZE = 24;
+
+    const snake = [
+      { col: 10, row: 8 },
+      { col: 9,  row: 8 },
+      { col: 8,  row: 8 },
+    ];
+
+    const DIRECTIONS = {
+      ArrowUp:    { col:  0, row: -1 },
+      ArrowDown:  { col:  0, row:  1 },
+      ArrowLeft:  { col: -1, row:  0 },
+      ArrowRight: { col:  1, row:  0 },
+    };
+
+    let direction = { ...DIRECTIONS.ArrowRight };
+    let status = "playing";
+
+    // 食物：一开始放在 (5, 5)，之后会放到随机位置
+    let food = { col: 5, row: 5 };
+
+    function placeFood() {
+      // Math.random() 给出 0 ~ 1 之间的小数
+      // × 24 后是 0 ~ 23.99……，Math.floor 向下取整 → 0 ~ 23 的整数
+      food = {
+        col: Math.floor(Math.random() * BOARD_SIZE),
+        row: Math.floor(Math.random() * BOARD_SIZE),
+      };
+    }
+
+    placeFood();   // 页面一打开就随机放一个食物
+
+    document.addEventListener("keydown", function (event) {
+      const wanted = DIRECTIONS[event.key];
+      if (wanted) direction = { ...wanted };
+    });
+
+    function draw() {
+      pen.clearRect(0, 0, board.width, board.height);
+
+      snake.forEach(function (part, index) {
+        pen.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
+        pen.fillRect(part.col * CELL, part.row * CELL, CELL, CELL);
+      });
+
+      // 画食物：珊瑚红
+      pen.fillStyle = "#ff6b6b";
+      pen.fillRect(food.col * CELL, food.row * CELL, CELL, CELL);
+    }
+
+    let speed = 150;
+    let lastMove = 0;
+
+    function update() {
+      const head = snake[0];
+      const next = {
+        col: head.col + direction.col,
+        row: head.row + direction.row,
+      };
+
+      if (
+        next.col < 0 || next.col >= BOARD_SIZE ||
+        next.row < 0 || next.row >= BOARD_SIZE
+      ) {
+        status = "over";
+        return;
+      }
+
+      snake.unshift(next);
+      snake.pop();
+    }
+
+    function loop(now) {
+      if (status === "playing" && now - lastMove >= speed) {
+        update();
+        lastMove = now;
+        draw();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+    draw();
+  </script>
+
+</body>
+</html>

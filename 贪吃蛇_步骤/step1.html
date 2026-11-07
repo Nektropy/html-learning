@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第1步：画出第一个方块</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+    }
+
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 画布：宽 480 像素，高 480 像素 -->
+  <canvas id="board" width="480" height="480"></canvas>
+
+  <script>
+    // 1. 找到画布
+    const board = document.getElementById("board");
+    // 2. 拿到画布的“画笔”（2D 上下文）
+    const pen = board.getContext("2d");
+
+    // 3. 往网格坐标 (10, 10) 画一个格子
+    //    像素 = 格数 × 每格的像素数（10 * 20 = 200）
+    pen.fillStyle = "#ff6b6b";
+    pen.fillRect(10 * 20, 10 * 20, 20, 20);
+  </script>
+
+</body>
+</html>

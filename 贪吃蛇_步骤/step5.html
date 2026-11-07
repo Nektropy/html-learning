@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第5步：自动跑起来</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+    }
+
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="board" width="480" height="480"></canvas>
+
+  <script>
+    const board = document.getElementById("board");
+    const pen = board.getContext("2d");
+
+    const CELL = 20;
+
+    const snake = [
+      { col: 10, row: 8 },
+      { col: 9,  row: 8 },
+      { col: 8,  row: 8 },
+    ];
+
+    const DIRECTIONS = {
+      ArrowUp:    { col:  0, row: -1 },
+      ArrowDown:  { col:  0, row:  1 },
+      ArrowLeft:  { col: -1, row:  0 },
+      ArrowRight: { col:  1, row:  0 },
+    };
+
+    let direction = { ...DIRECTIONS.ArrowRight };
+
+    document.addEventListener("keydown", function (event) {
+      const wanted = DIRECTIONS[event.key];
+      if (wanted) direction = { ...wanted };
+    });
+
+    function draw() {
+      pen.clearRect(0, 0, board.width, board.height);
+      snake.forEach(function (part, index) {
+        pen.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
+        pen.fillRect(part.col * CELL, part.row * CELL, CELL, CELL);
+      });
+    }
+
+    // ---- 自动走：这是本步新增的部分 ----
+    let speed = 150;       // 每 150 毫秒走一格
+    let lastMove = 0;      // 上一次“走”的时间
+
+    function move() {
+      const head = snake[0];
+      const next = {
+        col: head.col + direction.col,
+        row: head.row + direction.row,
+      };
+
+      snake.unshift(next);   // 在头前面插一格
+      snake.pop();           // 把尾巴去掉（长度不变）
+      // 这一版还没有食物，所以永远不 pop 之前先不判断
+    }
+
+    function loop(now) {
+      if (now - lastMove >= speed) {
+        move();
+        lastMove = now;
+        draw();
+      }
+      requestAnimationFrame(loop);   // 让浏览器下次再叫我
+    }
+
+    requestAnimationFrame(loop);
+  </script>
+
+</body>
+</html>

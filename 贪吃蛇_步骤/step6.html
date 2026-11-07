@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第6步：撞墙就结束</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+    }
+
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="board" width="480" height="480"></canvas>
+
+  <script>
+    const board = document.getElementById("board");
+    const pen = board.getContext("2d");
+
+    const CELL = 20;
+    const BOARD_SIZE = 24;        // 480 ÷ 20 = 24，即 24 列、24 行
+
+    const snake = [
+      { col: 10, row: 8 },
+      { col: 9,  row: 8 },
+      { col: 8,  row: 8 },
+    ];
+
+    const DIRECTIONS = {
+      ArrowUp:    { col:  0, row: -1 },
+      ArrowDown:  { col:  0, row:  1 },
+      ArrowLeft:  { col: -1, row:  0 },
+      ArrowRight: { col:  1, row:  0 },
+    };
+
+    let direction = { ...DIRECTIONS.ArrowRight };
+
+    // 游戏状态："playing"（正在玩）或 "over"（结束了）
+    let status = "playing";
+
+    document.addEventListener("keydown", function (event) {
+      const wanted = DIRECTIONS[event.key];
+      if (wanted) direction = { ...wanted };
+    });
+
+    function draw() {
+      pen.clearRect(0, 0, board.width, board.height);
+      snake.forEach(function (part, index) {
+        pen.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
+        pen.fillRect(part.col * CELL, part.row * CELL, CELL, CELL);
+      });
+    }
+
+    let speed = 150;
+    let lastMove = 0;
+
+    function update() {
+      const head = snake[0];
+      const next = {
+        col: head.col + direction.col,
+        row: head.row + direction.row,
+      };
+
+      // 撞墙检测：超出 0 ~ 23 就算出界
+      if (
+        next.col < 0 || next.col >= BOARD_SIZE ||
+        next.row < 0 || next.row >= BOARD_SIZE
+      ) {
+        status = "over";
+        return;                     // 结束，不再往下走
+      }
+
+      snake.unshift(next);
+      snake.pop();
+    }
+
+    function loop(now) {
+      if (status === "playing" && now - lastMove >= speed) {
+        update();
+        lastMove = now;
+        draw();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  </script>
+
+</body>
+</html>

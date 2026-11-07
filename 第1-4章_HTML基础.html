@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第1-4章 · HTML基础 —— HTML 入门到贪吃蛇</title>
+
+<!-- ============================================================
+     这里是 CSS（网页的"化妆"）。你现在不用看懂，第5章会慢慢讲。
+     它的作用只是：把这几章的文字排得好看、好读。
+     灰色的小字叫 .note（笔记），属于作者给你的旁白。
+     ============================================================ -->
+<style>
+  :root {
+    --ink: #1f2328;
+    --quiet: #667085;
+    --line: #e4e7ec;
+    --accent: #1a6dff;
+    --accent-bg: #eef4ff;
+    --code-bg: #f6f8fa;
+    --story-bg: #fff8e6;
+    --story-line: #f0b429;
+    --warn-bg: #fff1f0;
+    --warn-line: #ef4b4b;
+    --ok-bg: #eefaf1;
+    --ok-line: #2ea043;
+    --word-bg: #f4f0ff;
+    --word-line: #7c5cff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    max-width: 880px;
+    padding: 28px 20px 80px;
+    font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 16px;
+    background: #fcfcfd;
+  }
+  h1 { font-size: 1.7em; line-height: 1.3; margin: 0 0 6px; }
+  h2 { font-size: 1.3em; margin: 44px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 1.08em; margin: 26px 0 8px; }
+  .chapter { font-size: .92em; color: var(--quiet); margin: 0 0 4px; letter-spacing: .08em; }
+  code {
+    font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: .92em;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    font-size: .86em;
+    line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; }
+  .note {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-bg);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: .95em;
+  }
+  .note b:first-child { color: var(--accent); }
+  .story {
+    border-left: 4px solid var(--story-line);
+    background: var(--story-bg);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: .95em;
+  }
+  .story b:first-child { color: #b06f00; }
+  .warn {
+    border-left: 4px solid var(--warn-line);
+    background: var(--warn-bg);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: .95em;
+  }
+  .warn b:first-child { color: var(--warn-line); }
+  .ok {
+    border-left: 4px solid var(--ok-line);
+    background: var(--ok-bg);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: .95em;
+  }
+  .ok b:first-child { color: #1a7f37; }
+  .wordlist {
+    border: 1px solid var(--word-line);
+    background: var(--word-bg);
+    border-radius: 8px;
+    padding: 6px 14px;
+    margin: 14px 0;
+    font-size: .93em;
+  }
+  .wordlist table { width: 100%; border-collapse: collapse; }
+  .wordlist td { padding: 4px 6px; border-bottom: 1px dashed #d8cfff; vertical-align: top; }
+  .wordlist td:first-child { width: 9em; font-family: Consolas, monospace; white-space: nowrap; }
+  .wordlist td:last-child { width: 4.5em; white-space: nowrap; color: var(--quiet); }
+  .compare { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: .93em; }
+  .compare th, .compare td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  .compare th { background: var(--code-bg); }
+  ul.toc { padding-left: 1.2em; }
+  ul.toc li { margin: 3px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .big { font-size: 1.6em; margin: 0; }
+  .foot { margin-top: 60px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--quiet); font-size: .9em; }
+</style>
+</head>
+
+<body>
+
+<h1>HTML 入门到贪吃蛇</h1>
+<p class="chapter">第 1 — 4 章 · HTML 基础</p>
+<p>
+  这套教程一共有 11 章。学完以后，你会从零做出一个能玩的贪吃蛇游戏。
+  每一章都会被做成单独的一个网页文件，你直接在浏览器里打开就能读。
+</p>
+
+<div class="wordlist">
+  <p style="margin:6px 0 4px"><b>本章单词表</b>（先认识一下，后面会反复见到）</p>
+  <table>
+    <tr><td>HTML</td><td>超文本标记语言</td><td>n. 名称</td></tr>
+    <tr><td>HyperText</td><td>超文本</td><td>n.</td></tr>
+    <tr><td>Markup</td><td>标记</td><td>n.</td></tr>
+    <tr><td>Language</td><td>语言</td><td>n.</td></tr>
+    <tr><td>web</td><td>网；网页</td><td>n.</td></tr>
+    <tr><td>page</td><td>页面</td><td>n.</td></tr>
+    <tr><td>tag</td><td>标签</td><td>n.</td></tr>
+    <tr><td>element</td><td>元素</td><td>n.</td></tr>
+    <tr><td>attribute</td><td>属性</td><td>n.</td></tr>
+  </table>
+</div>
+
+<ul class="toc">
+  <li><a href="#ch1">第 1 章 · 网页是什么？HTML 名字的由来</a></li>
+  <li><a href="#ch2">第 2 章 · HTML 骨架：把文件写对</a></li>
+  <li><a href="#ch3">第 3 章 · 加内容：标题、段落、列表、图片</a></li>
+  <li><a href="#ch4">第 4 章 · 小练习：做一个属于你自己的介绍页</a></li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="ch1">第 1 章 · 网页是什么？HTML 名字的由来</h2>
+
+<h3>1.1 一句话理解网页</h3>
+<p>
+  你看到的每一个网页（包括现在这个页面），本质上是<b>一个普通的文本文件</b>，
+  里面写着两样东西：<b>内容</b>（有哪些字、哪些图）和<b>标记</b>（哪个字要大、要在哪儿换行）。
+  浏览器负责把这个文本文件“翻译”成你看到的画面。
+</p>
+<p>
+  写这种文件用的语言，就叫 <b>HTML</b>，全称是
+  <b>HyperText Markup Language</b>（超文本标记语言）。
+</p>
+
+<div class="wordlist">
+  <table>
+    <tr><td>Hyper</td><td>超级的、超过的</td><td>前缀</td></tr>
+    <tr><td>Text</td><td>文本；文字</td><td>n.</td></tr>
+    <tr><td>HyperText</td><td>超文本（能“点一下跳走”的文字）</td><td>n.</td></tr>
+    <tr><td>Markup</td><td>标记（用尖括号告诉浏览器这是什么）</td><td>n.</td></tr>
+    <tr><td>Mark</td><td>标记、做记号</td><td>v./n.</td></tr>
+    <tr><td>Language</td><td>语言</td><td>n.</td></tr>
+    <tr><td>browser</td><td>浏览器</td><td>n.</td></tr>
+    <tr><td>display / render</td><td>显示 / 渲染</td><td>v.</td></tr>
+  </table>
+</div>
+
+<p>“超文本”里的“超”（Hyper），意思是：一段文字可以<b>指向</b>另一段文字。
+点一下，就跳过去了。这个“点一下跳走”的能力，后来发展成了网页上最重要的东西之一 —— 链接。</p>
+
+<div class="story">
+  <b>小故事 · 互联网最初只有“超文本”三个字</b>
+  <p>
+    上世纪 60 年代，一个叫 <b>Ted Nelson</b>（泰德·尼尔森）的美国学者，想造一个“全世界所有文献连成一张网”的系统。
+    他造了两个词：<b>hypertext</b>（超文本）和 <b>hypermedia</b>（超媒体）。
+    “hyper” 来自希腊语，本意是“在……之上、超越”，就像 geometry（几何）里的 “hyper+ ” 还能拼出 hyperplane（超平面）一样。
+    他当时根本没想到，几十年后，“超文本”这三个字会让所有人都能点着链接从一个网页跳到另一个网页。
+  </p>
+  <p>
+    1989 年，在欧洲核子研究中心（CERN）工作的英国人 <b>Tim Berners-Lee</b>（蒂姆·伯纳斯-李）写了一份提案：
+    把“超文本”和当时刚出现的互联网（internet）结合，让不同的计算机之间能互相链接文档。
+    这个想法被命名为 <b>World Wide Web</b>（万维网，简称 WWW）。“World”（世界）、“Wide”（广泛的）、“Web”（网）。
+    为了写这些文档，他造了一门标记语言，就叫 <b>HTML</b>。
+  </p>
+  <p>
+    顺带一提：他发明这套东西之后，<b>没有申请专利</b>，而是让它免费给全世界用。所以你今天能免费学到它。
+  </p>
+</div>
+
+<h3>1.2 HTML 的样子：尖括号</h3>
+<p>HTML 只有一件事要做：<b>用尖括号把内容“包起来”，告诉浏览器这是什么。</b></p>
+<pre><code>&lt;h1&gt;我是标题&lt;/h1&gt;
+&lt;p&gt;我是一个段落。&lt;/p&gt;</code></pre>
+
+<p>翻译成中文：</p>
+<ul>
+  <li><code>&lt;h1&gt;</code> 到 <code>&lt;/h1&gt;</code>，意思是：这中间的文字是“一级标题”。h 是 heading（标题）的缩写，1 表示最大。</li>
+  <li><code>&lt;p&gt;</code> 到 <code>&lt;/p&gt;</code>，意思是：这中间的文字是一个“段落”。p 是 paragraph（段落）。</li>
+</ul>
+
+<div class="wordlist">
+  <table>
+    <tr><td>heading</td><td><b>h</b> 的来源：标题</td><td>n.</td></tr>
+    <tr><td>paragraph</td><td><b>p</b> 的来源：段落</td><td>n.</td></tr>
+    <tr><td>quote</td><td><b>q</b> 的来源：引用</td><td>n.</td></tr>
+    <tr><td>image</td><td><b>img</b> 的来源：图像（图片）</td><td>n.</td></tr>
+    <tr><td>list</td><td>列表</td><td>n.</td></tr>
+    <tr><td>item</td><td>项目（列表里的一条）</td><td>n.</td></tr>
+    <tr><td>un-ordered</td><td>无序的</td><td>adj.</td></tr>
+    <tr><td>ordered</td><td>有序的</td><td>adj.</td></tr>
+    <tr><td>title</td><td>标题（网页标签栏上那个字）</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>为什么代码里都是英文？</b>
+  因为 HTML 是英语国家的第一门网页语言，这些缩写（h1、p、img、li……）都是英文单词的首字母。
+  <b>不擅长记忆</b>的话，你的策略是：不用背，<b>看着表格、看着代码，混个眼熟</b>。
+  以后每次见到 <code>&lt;li&gt;</code>，就顺带念一遍 “list item（列表项）”，见两次就记住了。
+</div>
+
+<h3>1.3 三层分工：HTML、CSS、JavaScript</h3>
+<p>给游戏角色设计的三层：</p>
+<table class="compare">
+  <tr><th>语言</th><th>全称</th><th>中文</th><th>管什么</th><th>打个比方</th></tr>
+  <tr><td>HTML</td><td>HyperText Markup Language</td><td>超文本标记语言</td><td>页面上有什么</td><td>骨架</td></tr>
+  <tr><td>CSS</td><td>Cascading Style Sheets</td><td>层叠样式表</td><td>长什么样</td><td>皮肤 / 衣服</td></tr>
+  <tr><td>JavaScript</td><td>JavaScript</td><td>JavaScript 脚本</td><td>动起来、会思考</td><td>肌肉和大脑</td></tr>
+</table>
+<p>
+  做一个贪吃蛇，这三样都要一点：HTML 是页面上那块<b>画布</b>，CSS 是<b>配色和边框</b>，
+  JavaScript 是<b>蛇怎么走、吃什么、撞墙怎么办</b>。
+</p>
+
+<!-- ============================================================ -->
+<h2 id="ch2">第 2 章 · HTML 骨架：把文件写对</h2>
+
+<h3>2.1 一个网页的最小“骨架”</h3>
+<p>每个 HTML 文件，都应该有这个骨架：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;我的第一个网页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;你好，世界&lt;/h1&gt;
+  &lt;p&gt;这是我的第一个网页。&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>逐行翻译：</p>
+<table class="compare">
+  <tr><th>这一行</th><th>意思是</th></tr>
+  <tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>告诉浏览器：这是 HTML 文件。DOCTYPE 是 <b>document type</b>（文档类型）的缩写。</td></tr>
+  <tr><td><code>&lt;html lang="zh-CN"&gt;</code></td><td>整个文件的最外层。lang 是 <b>language</b>，zh-CN 表示简体中文（中国）。</td></tr>
+  <tr><td><code>&lt;head&gt; … &lt;/head&gt;</code></td><td>“头部”：给浏览器看的信息，不会直接显示在页面上。</td></tr>
+  <tr><td><code>&lt;meta charset="UTF-8"&gt;</code></td><td>文件的编码方式。charset 是 <b>character set</b>（字符集），UTF-8 是国际通用的那种。</td></tr>
+  <tr><td><code>&lt;title&gt;…&lt;/title&gt;</code></td><td>浏览器标签栏上显示的文字。</td></tr>
+  <tr><td><code>&lt;body&gt; … &lt;/body&gt;</code></td><td>“身体”：所有用户能看到的内容都写在这里。</td></tr>
+</table>
+
+<div class="wordlist">
+  <table>
+    <tr><td>document</td><td>文档</td><td>n.</td></tr>
+    <tr><td>type</td><td>类型</td><td>n.</td></tr>
+    <tr><td>declare</td><td>声明</td><td>v.</td></tr>
+    <tr><td>head</td><td>头部</td><td>n.</td></tr>
+    <tr><td>body</td><td>身体（正文）</td><td>n.</td></tr>
+    <tr><td>meta</td><td>“关于数据的数据”，这里的设定型信息</td><td>adj.</td></tr>
+    <tr><td>character</td><td>字符</td><td>n.</td></tr>
+    <tr><td>set</td><td>集合</td><td>n.</td></tr>
+    <tr><td>charset</td><td>字符集（character + set）</td><td>n.</td></tr>
+    <tr><td>UTF-8</td><td>Unicode Transformation Format - 8 bit（万国码，8 位格式）</td><td>n.</td></tr>
+    <tr><td>lang</td><td>语言（language 的缩写）</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="warn">
+  <b>最常见的第一个坑 · 中文变成乱码</b>
+  如果 <code>&lt;meta charset="UTF-8"&gt;</code> 这一行漏了，或者写错了，中文可能显示成“锟斤拷”（一段乱码）。
+  <b>解决方法</b>：一旦乱码，第一件事就是检查这一行。
+</div>
+
+<h3>2.2 标签的两种写法</h3>
+<p>HTML 的标签，就是尖括号里面的英文单词。<b>大多数成对出现</b>，但有几个是“单身”的：</p>
+<table class="compare">
+  <tr><th>类型</th><th>写法</th><th>例子</th></tr>
+  <tr><td>成对标签</td><td><code>&lt;开始&gt; 内容 &lt;/结束&gt;</code></td><td><code>&lt;p&gt;你好&lt;/p&gt;</code></td></tr>
+  <tr><td>单标签（空标签）</td><td><code>&lt;标签&gt;</code>，没有结束的部分</td><td><code>&lt;img&gt;</code>（图片）、<code>&lt;br&gt;</code>（换行）、<code>&lt;hr&gt;</code>（分隔线）</td></tr>
+</table>
+
+<div class="note">
+  <b>怎么一眼区分？</b>
+  找那一根竖杠：<code>&lt;/p&gt;</code> 里多了一个 <code>/</code>（斜杠，读作 slash），意思就是“结束”。
+  没有斜杠，就是“开始”。
+</div>
+
+<h3>2.3 文件的保存：.html 后缀</h3>
+<ol>
+  <li>用记事本（Notepad）或者 VS Code 打开一个新文件。</li>
+  <li>把上面的骨架代码抄（或复制）进去。</li>
+  <li>保存时，文件名写成 <b>hello.html</b>，保存类型选“所有文件”，编码选 <b>UTF-8</b>。</li>
+  <li>在文件夹里双击这个文件，浏览器就会打开它。</li>
+</ol>
+
+<div class="warn">
+  <b>常见坑 · 后缀变成了 .html.txt</b>
+  记事本保存时，如果“保存类型”没改，可能会自动加上 .txt，文件变成 <b>hello.html.txt</b>，浏览器就不会把它当网页打开。
+  <b>在 Windows 里怎么看真实后缀？</b>资源管理器 → 查看 → 勾选“文件扩展名”。
+  <b>推荐工具</b>：VS Code（免费的代码编辑器，能帮你检查错误）。
+</div>
+
+<div class="ok">
+  <b>先试试看</b>
+  打开 <a href="样板_你好世界.html">样板_你好世界.html</a>（和你学的一模一样），
+  再用记事本打开它，把 <code>你好，世界</code> 改成你自己的话，保存，刷新浏览器，看效果。
+</div>
+
+<h3>2.4 缩进：为什么代码要“往里缩”</h3>
+<p>
+  浏览器不在乎代码前面有几个空格。但人很在乎。
+  把里面的标签往右缩进，就能一眼看出“谁包在谁里面”：
+</p>
+<pre><code>&lt;body&gt;
+  &lt;h1&gt;标题&lt;/h1&gt;
+  &lt;p&gt;段落&lt;/p&gt;
+&lt;/body&gt;</code></pre>
+<p>
+  上面这段里，<code>&lt;h1&gt;</code> 和 <code>&lt;p&gt;</code> 缩进了 2 格，表示它们是 <code>&lt;body&gt;</code> 的“孩子”。
+  在 VS Code 里按 <b>Shift + Alt + F</b> 可以自动整理缩进，按 <b>Ctrl + S</b> 保存。
+</p>
+
+<!-- ============================================================ -->
+<h2 id="ch3">第 3 章 · 加内容：标题、段落、列表、图片</h2>
+
+<h3>3.1 标题 h1 到 h6</h3>
+<p>标题一共有 6 级，h1 最大，h6 最小：</p>
+<pre><code>&lt;h1&gt;一级标题&lt;/h1&gt;
+&lt;h2&gt;二级标题&lt;/h2&gt;
+&lt;h3&gt;三级标题&lt;/h3&gt;
+&lt;h6&gt;六级标题（最小的标题）&lt;/h6&gt;</code></pre>
+<p>浏览器会自动把 h1 显示得很大、h6 显示得很小，你什么都不用做。一个页面建议只用<b>一个</b> h1。</p>
+
+<h3>3.2 段落与换行</h3>
+<p>段落 p 是最常用的标签。在 HTML 里，<b>代码里的换行和多余空格，浏览器会当成一个空格</b>：</p>
+<pre><code>&lt;p&gt;
+  这一行的
+  文字，
+  写的时候换了很多行，
+&lt;/p&gt;</code></pre>
+<p>显示出来是连成一句话的。如果你真想换行，要用 <code>&lt;br&gt;</code>（break 的缩写，断开）：</p>
+<pre><code>&lt;p&gt;第一行&lt;br&gt;第二行&lt;/p&gt;</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>break</td><td><b>br</b> 的来源：打断、换行</td><td>v.</td></tr>
+    <tr><td>horizontal</td><td><b>hr</b> 里的 h：水平的</td><td>adj.</td></tr>
+    <tr><td>rule</td><td><b>hr</b> 里的 r：线、横线</td><td>n.</td></tr>
+    <tr><td>strong</td><td><b>加粗</b>：强壮、强烈</td><td>adj.</td></tr>
+    <tr><td>emphasis</td><td><b>em</b> 全部：重点、强调</td><td>n.</td></tr>
+    <tr><td>bold</td><td><b>b</b> 的来源：粗体的</td><td>adj.</td></tr>
+    <tr><td>italic</td><td><b>i</b> 的来源：斜体的</td><td>adj.</td></tr>
+  </table>
+</div>
+
+<h3>3.3 加粗和斜体</h3>
+<pre><code>&lt;p&gt;
+  这句话里有&lt;strong&gt;重点&lt;/strong&gt;，
+  也有&lt;em&gt;强调&lt;/em&gt;。
+&lt;/p&gt;</code></pre>
+<p>
+  <code>&lt;strong&gt;</code>（strong，强）会让字变粗；<code>&lt;em&gt;</code>（emphasis，强调）会让字变斜。
+  老代码里你可能看到 <code>&lt;b&gt;</code>（bold，粗体）和 <code>&lt;i&gt;</code>（italic，斜体），它们效果差不多，
+  但 strong 和 em 更“有含义”，现在更推荐用 strong 和 em。
+</p>
+
+<div class="story">
+  <b>小故事 · 为什么“加粗”和“强调”要分成两个标签？</b>
+  <p>
+    早期网页里，<code>&lt;b&gt;</code> 就是“变粗”，<code>&lt;i&gt;</code> 就是“变斜”，说的全是<b>长相</b>。
+    后来有人发现：如果一个人用朗读软件（读屏软件）听网页，它读不出“粗”和“斜”，
+    但能读出“这里有重点”。于是 HTML 加了一对更“讲道理”的标签：<b>strong</b>（内容重要）和 <b>em</b>（语气强调）。
+  </p>
+  <p>
+    这背后是一个道理：HTML 管“是什么”，CSS 管“长什么样”。到了第 5 章你就会发现，CSS 也能让 strong 不变粗 —— 长相的事，交给 CSS 就好。
+  </p>
+</div>
+
+<h3>3.4 列表：ul / ol / li</h3>
+<p>列表由“列表容器”和“列表项”两层组成。列表项都用 <code>&lt;li&gt;</code>（list item，列表项）：</p>
+
+<pre><code>&lt;ul&gt;
+  &lt;li&gt;苹果&lt;/li&gt;
+  &lt;li&gt;香蕉&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;先洗手&lt;/li&gt;
+  &lt;li&gt;再吃饭&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+
+<table class="compare">
+  <tr><th>标签</th><th>英文全称</th><th>中文</th><th>效果</th></tr>
+  <tr><td><code>&lt;ul&gt;</code></td><td>unordered list</td><td>无序列表</td><td>前面是圆点 •</td></tr>
+  <tr><td><code>&lt;ol&gt;</code></td><td>ordered list</td><td>有序列表</td><td>前面是数字 1. 2. 3.</td></tr>
+  <tr><td><code>&lt;li&gt;</code></td><td>list item</td><td>列表项</td><td>列表里的一条</td></tr>
+</table>
+
+<div class="wordlist">
+  <table>
+    <tr><td>order</td><td>顺序、次序</td><td>n./v.</td></tr>
+    <tr><td>ordered</td><td>有顺序的</td><td>adj.</td></tr>
+    <tr><td>unordered</td><td>没有顺序的</td><td>adj.</td></tr>
+    <tr><td>item</td><td>项目、条目</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="warn">
+  <b>常见坑 · li 写出来了，但没有外面的容器</b>
+  <code>&lt;li&gt;</code> 必须写在 <code>&lt;ul&gt;</code> 或 <code>&lt;ol&gt;</code> 里面。
+  如果你的圆点没显示出来，先检查是不是忘了给 li 套一层 ul。
+</div>
+
+<h3>3.5 图片 img</h3>
+<p>图片是少数几个“单身标签”之一，它用<b>属性</b>来说明自己是谁：</p>
+<pre><code>&lt;img src="cat.jpg" alt="一只猫"&gt;</code></pre>
+
+<table class="compare">
+  <tr><th>属性</th><th>英文全称</th><th>中文</th><th>作用</th></tr>
+  <tr><td><code>src</code></td><td>source</td><td>来源（地址）</td><td>图片文件在哪里</td></tr>
+  <tr><td><code>alt</code></td><td>alternative</td><td>替代文字</td><td>图片加载不出来时显示的说明；盲人读屏软件也会读它</td></tr>
+</table>
+
+<div class="wordlist">
+  <table>
+    <tr><td>source</td><td><b>src</b> 的来源：来源</td><td>n.</td></tr>
+    <tr><td>alternative</td><td><b>alt</b> 的来源：替代的</td><td>adj.</td></tr>
+    <tr><td>width</td><td>宽度</td><td>n.</td></tr>
+    <tr><td>height</td><td>高度</td><td>n.</td></tr>
+    <tr><td>filename</td><td>文件名</td><td>n.</td></tr>
+    <tr><td>folder / directory</td><td>文件夹 / 目录</td><td>n.</td></tr>
+    <tr><td>path</td><td>路径</td><td>n.</td></tr>
+  </table>
+</div>
+
+<p>如果图片和网页放在<b>同一个文件夹</b>，<code>src</code> 里只写文件名就行。如果图片在下一层的 img 文件夹里：</p>
+<pre><code>&lt;img src="img/cat.jpg" alt="一只猫"&gt;</code></pre>
+<p><code>img/cat.jpg</code> 表示“进到 img 文件夹，找 cat.jpg”。这个斜杠是文件夹的分隔，跟标签结束的那个斜杠不是一回事。</p>
+
+<div class="warn">
+  <b>常见坑 · 路径和文件名大小写</b>
+  <code>Cat.jpg</code> 和 <code>cat.jpg</code> 在 Windows 里被当成同一个文件，但传到服务器上就成了两个不同的文件。
+  <b>养成习惯</b>：文件名全部用小写英文字母加数字，不要用中文、空格。
+</div>
+
+<h3>3.6 链接 a</h3>
+<p>“超文本”的那个“超”字，在代码里就是链接：</p>
+<pre><code>&lt;a href="https://developer.mozilla.org"&gt;MDN 开发者文档&lt;/a&gt;</code></pre>
+<table class="compare">
+  <tr><th>标签 / 属性</th><th>来源</th><th>中文</th></tr>
+  <tr><td><code>&lt;a&gt;</code></td><td>anchor</td><td>锚（把它“锚”到一个网址上）</td></tr>
+  <tr><td><code>href</code></td><td>hypertext reference</td><td>超文本引用</td></tr>
+</table>
+<p>
+  MDN（Mozilla Developer Network）是最权威的 HTML 学习网站之一。
+  以后遇到不懂的标签，搜 “<code>MDN 标签名</code>”，几乎都能查到。比如搜 “MDN ul”。
+</p>
+
+<h3>3.7 把它们拼起来</h3>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;我的介绍页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;我是杨过&lt;/h1&gt;
+  &lt;p&gt;今年 &lt;strong&gt;十八&lt;/strong&gt; 岁，正在学做网页。&lt;/p&gt;
+
+  &lt;h2&gt;我喜欢的三样东西&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;写代码&lt;/li&gt;
+    &lt;li&gt;玩贪吃蛇&lt;/li&gt;
+    &lt;li&gt;看历史故事&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;我学习网页的顺序&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;HTML&lt;/li&gt;
+    &lt;li&gt;CSS&lt;/li&gt;
+    &lt;li&gt;JavaScript&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;p&gt;
+    我最常查的网站是
+    &lt;a href="https://developer.mozilla.org"&gt;MDN&lt;/a&gt;。
+  &lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<div class="ok">
+  <b>看一下效果</b>
+  打开 <a href="样板_我的介绍页.html">样板_我的介绍页.html</a>，
+  这就是上面这段代码在浏览器里真实的样子。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="ch4">第 4 章 · 小练习：做一个属于你自己的介绍页</h2>
+
+<p>把下面的代码抄下来，把带 —— 的地方改成你自己的内容。</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;—— 你的名字 —— 的介绍页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;—— 你的名字 ——&lt;/h1&gt;
+
+  &lt;h2&gt;关于我&lt;/h2&gt;
+  &lt;p&gt;
+    —— 用一两句话介绍自己，比如：&ldquo;我是一个正在学 HTML 的学生。&rdquo; ——
+  &lt;/p&gt;
+
+  &lt;h2&gt;我的目标&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;学会写网页&lt;/li&gt;
+    &lt;li&gt;—— 你的一条目标 ——&lt;/li&gt;
+    &lt;li&gt;—— 你的另一条目标 ——&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;我的时间表&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;周一：—— 做什么 ——&lt;/li&gt;
+    &lt;li&gt;周二：—— 做什么 ——&lt;/li&gt;
+    &lt;li&gt;周三：—— 做什么 ——&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>改完以后，保存成 <b>about.html</b>，双击打开。</p>
+
+<h3>小检查清单</h3>
+<ul>
+  <li>标签是不是都有结束？（除了 img、br、hr、meta 这类单身标签）</li>
+  <li>每对标签里，是不是都用了同一层的尖括号？</li>
+  <li>开头有 <code>&lt;!DOCTYPE html&gt;</code> 吗？</li>
+  <li>有 <code>&lt;meta charset="UTF-8"&gt;</code> 吗？</li>
+  <li>标题是不是用 h1 到 h6，而不是让文字自己变大？</li>
+</ul>
+
+<div class="story">
+  <b>小故事 · 这段骨架为什么叫“Hello World”</b>
+  <p>
+    几乎所有编程教程的第一课，都是让程序打印一句 “Hello, World!”（你好，世界！）。
+    这个传统来自 1972 年贝尔实验室的研究员 <b>Brian Kernighan</b>（布莱恩·柯林汉）。
+    他在 A Tutorial Introduction to the Language B 里，用了一句 “hello, world!”，
+    后来又写进了最著名的 C 语言教程《The C Programming Language》（C 语言程序设计）的第一页。
+    从那以后，几千种编程语言、几十种教程，都从这句话开始。
+  </p>
+  <p>
+    所以不用担心自己的第一个页面是不是太简单 —— 全世界所有的程序员，都是在这句话里起步的。
+  </p>
+</div>
+
+<h3>本章单词速记卡</h3>
+<div class="wordlist">
+  <table>
+    <tr><td>content</td><td>内容</td><td>n.</td></tr>
+    <tr><td>structure</td><td>结构</td><td>n.</td></tr>
+    <tr><td>semantic</td><td>语义的（标签的含义）</td><td>adj.</td></tr>
+    <tr><td>syntax</td><td>语法</td><td>n.</td></tr>
+    <tr><td>indent</td><td>缩进</td><td>v./n.</td></tr>
+    <tr><td>extension</td><td>扩展名</td><td>n.</td></tr>
+    <tr><td>encoding</td><td>编码</td><td>n.</td></tr>
+    <tr><td>nested</td><td>嵌套的（一个套一个）</td><td>adj.</td></tr>
+    <tr><td>container</td><td>容器</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="foot">
+  <p>← 上一篇：<a href="index.html">教程目录</a> ｜ 下一篇：<a href="第5-9章_CSS基础.html">第 5 — 9 章 · CSS 基础</a> →</p>
+  <p>遇到不懂的地方，回到 <a href="index.html">目录页</a> 的“常见错误”里查一查。</p>
+</div>
+
+</body>
+</html>

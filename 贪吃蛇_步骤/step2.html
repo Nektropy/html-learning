@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贪吃蛇 · 第2步：用变量表示位置</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f1115;
+    }
+
+    #board {
+      background: #161a20;
+      border: 2px solid #2a2f38;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="board" width="480" height="480"></canvas>
+
+  <script>
+    const board = document.getElementById("board");
+    const pen = board.getContext("2d");
+
+    const CELL = 20;      // CELL = 格子，每格 20 像素
+    let col = 10;         // col = column，第几列
+    let row = 8;          // row，第几行
+
+    function draw() {
+      // 先擦掉整块画布（不然旧位置还在）
+      pen.clearRect(0, 0, board.width, board.height);
+
+      // 再按“列、行”算出像素坐标，画一个格子
+      pen.fillStyle = "#ff6b6b";
+      pen.fillRect(col * CELL, row * CELL, CELL, CELL);
+    }
+
+    draw();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第5-9章 · CSS基础 —— HTML 入门到贪吃蛇</title>
+
+<style>
+  :root {
+    --ink: #1f2328;
+    --quiet: #667085;
+    --line: #e4e7ec;
+    --accent: #1a6dff;
+    --accent-bg: #eef4ff;
+    --code-bg: #f6f8fa;
+    --story-bg: #fff8e6;
+    --story-line: #f0b429;
+    --warn-bg: #fff1f0;
+    --warn-line: #ef4b4b;
+    --ok-bg: #eefaf1;
+    --ok-line: #2ea043;
+    --word-bg: #f4f0ff;
+    --word-line: #7c5cff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    max-width: 880px;
+    padding: 28px 20px 80px;
+    font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 16px;
+    background: #fcfcfd;
+  }
+  h1 { font-size: 1.7em; line-height: 1.3; margin: 0 0 6px; }
+  h2 { font-size: 1.3em; margin: 44px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 1.08em; margin: 26px 0 8px; }
+  .chapter { font-size: .92em; color: var(--quiet); margin: 0 0 4px; letter-spacing: .08em; }
+  code {
+    font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+    background: var(--code-bg); padding: 1px 5px; border-radius: 4px; font-size: .92em;
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: .86em; line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; }
+  .note, .story, .warn, .ok {
+    padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: .95em;
+  }
+  .note { border-left: 4px solid var(--accent); background: var(--accent-bg); }
+  .note b:first-child { color: var(--accent); }
+  .story { border-left: 4px solid var(--story-line); background: var(--story-bg); }
+  .story b:first-child { color: #b06f00; }
+  .warn { border-left: 4px solid var(--warn-line); background: var(--warn-bg); }
+  .warn b:first-child { color: var(--warn-line); }
+  .ok { border-left: 4px solid var(--ok-line); background: var(--ok-bg); }
+  .ok b:first-child { color: #1a7f37; }
+  .wordlist {
+    border: 1px solid var(--word-line); background: var(--word-bg);
+    border-radius: 8px; padding: 6px 14px; margin: 14px 0; font-size: .93em;
+  }
+  .wordlist table { width: 100%; border-collapse: collapse; }
+  .wordlist td { padding: 4px 6px; border-bottom: 1px dashed #d8cfff; vertical-align: top; }
+  .wordlist td:first-child { width: 9em; font-family: Consolas, monospace; white-space: nowrap; }
+  .wordlist td:last-child { width: 4.5em; white-space: nowrap; color: var(--quiet); }
+  .compare { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: .93em; }
+  .compare th, .compare td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  .compare th { background: var(--code-bg); }
+  ul.toc { padding-left: 1.2em; }
+  ul.toc li { margin: 3px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .foot { margin-top: 60px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--quiet); font-size: .9em; }
+
+  /* 演示区：把 CSS 效果直接画给你看 */
+  .demo {
+    border: 1px dashed #b8c2cc; border-radius: 8px;
+    padding: 14px; margin: 14px 0; background: #fff;
+  }
+  .demo-title { font-size: .85em; color: var(--quiet); margin: 0 0 8px; }
+
+  /* —— 用来演示盒子模型的 —— */
+  .box-demo {
+    width: 220px; height: 100px;
+    margin: 24px; padding: 16px;
+    border: 4px solid #ef4b4b;
+    background: #ffe9d6;
+  }
+  .box-demo-inner { background: #ffc48a; padding: 6px; font-size: .8em; }
+
+  /* —— 用来演示 display 的 —— */
+  .disp-block { display: block; background: #dbeafe; margin: 3px 0; padding: 4px 6px; }
+  .disp-inline { display: inline; background: #fee2e2; padding: 4px 6px; margin: 0 6px; }
+  .disp-none { display: none; }
+
+  /* —— 用来演示 flex 的 —— */
+  .flex-demo {
+    display: flex;
+    gap: 10px;
+    background: #eef2f7;
+    padding: 10px;
+    border-radius: 6px;
+  }
+  .flex-demo div {
+    background: #1a6dff; color: #fff; padding: 10px 14px; border-radius: 6px;
+  }
+
+  /* —— 用来演示 grid 的 —— */
+  .grid-demo {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    width: 260px;
+    padding: 8px;
+    background: #2b2f36;
+    border-radius: 6px;
+  }
+  .grid-demo div { aspect-ratio: 1 / 1; background: #3c414a; border-radius: 3px; }
+  .grid-demo .food { background: #ff6b6b; }
+</style>
+</head>
+
+<body>
+
+<h1>CSS 基础</h1>
+<p class="chapter">第 5 — 9 章 · 让网页变好看</p>
+
+<p>
+  学了 HTML，你有了“骨架”：一堆标题、段落、列表。
+  但它们看起来像一份没有排版的文档 —— 黑字白底、从上往下堆。
+  这一篇教你给骨架<b>穿上衣服</b>。掌握下面这些，就足够你做贪吃蛇的<b>打开页、结束页、配色</b>了。
+</p>
+
+<div class="wordlist">
+  <p style="margin:6px 0 4px"><b>本章最重要的单词</b></p>
+  <table>
+    <tr><td>Cascading Style Sheets</td><td>层叠样式表（CSS 全称）</td><td>n.</td></tr>
+    <tr><td>Cascading</td><td>层叠的（像瀑布一样一层压一层）</td><td>adj.</td></tr>
+    <tr><td>style</td><td>样式</td><td>n.</td></tr>
+    <tr><td>sheet</td><td>表、一张（纸）</td><td>n.</td></tr>
+    <tr><td>selector</td><td>选择器（选谁来打扮）</td><td>n.</td></tr>
+    <tr><td>property</td><td>属性（文件里那个选项名）</td><td>n.</td></tr>
+    <tr><td>value</td><td>值</td><td>n.</td></tr>
+    <tr><td>declaration</td><td>声明</td><td>n.</td></tr>
+  </table>
+</div>
+
+<ul class="toc">
+  <li><a href="#ch5">第 5 章 · CSS 是什么：一条规则拆成两半</a></li>
+  <li><a href="#ch6">第 6 章 · 选择器：class 和 id 是什么</a></li>
+  <li><a href="#ch7">第 7 章 · 盒子模型：边距、内边距、边框</a></li>
+  <li><a href="#ch8">第 8 章 · 颜色、字体、居中</a></li>
+  <li><a href="#ch9">第 9 章 · 布局入门：flex 和 grid</a></li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="ch5">第 5 章 · CSS 是什么：一条规则拆成两半</h2>
+
+<p>CSS 全称 <b>Cascading Style Sheets</b>，翻译成中文是“层叠样式表”。</p>
+<ul>
+  <li><b>Style</b>（样式）= 字号、颜色、位置……这些“长相”。</li>
+  <li><b>Sheet</b>（表）= 它写成一张“风格清单”，不是散落在每个标签里的。</li>
+  <li><b>Cascading</b>（层叠）= 同一条规则如果被写好几次，后写的、写得更具体的会“盖住”前面的（像传了一层又一层）。</li>
+</ul>
+
+<h3>5.1 把 CSS 放到 HTML 里</h3>
+<p>最省事的方式：在 <code>&lt;head&gt;</code> 里写一个 <code>&lt;style&gt;</code>（样式）标签，把 CSS 写进去。</p>
+<pre><code>&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;测试&lt;/title&gt;
+  &lt;style&gt;
+    /* 这里是 CSS 注释，浏览器会忽略它 */
+    h1 {
+      color: red;
+      font-size: 40px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;</code></pre>
+
+<div class="note">
+  <b>两种注释别搞混</b><br>
+  HTML 的注释：<code>&lt;!-- 这样写 --&gt;</code><br>
+  CSS 的注释：<code>/* 这样写 */</code><br>
+  它们只在各自的“地盘”里有效。<b>写注释是好习惯</b>，尤其是你以后回头看自己的代码时。
+</div>
+
+<h3>5.2 一条 CSS 规则的形状</h3>
+<pre><code>h1 {
+  color: red;
+  font-size: 40px;
+}</code></pre>
+
+<pre><code>选择器 {           ← 选谁（selector）
+  属性: 值;        ← 改什么（property: value），每句用分号结尾
+}</code></pre>
+
+<table class="compare">
+  <tr><th>部分</th><th>英文</th><th>中文</th><th>这段代码里是</th></tr>
+  <tr><td>h1</td><td>selector</td><td>选择器</td><td>所有的一级标题</td></tr>
+  <tr><td>color</td><td>property</td><td>属性</td><td>颜色</td></tr>
+  <tr><td>red</td><td>value</td><td>值</td><td>红色</td></tr>
+  <tr><td>color: red;</td><td>declaration</td><td>声明</td><td>一句完整的设定</td></tr>
+</table>
+
+<div class="warn">
+  <b>三个最常见的 CSS 语法错误</b>
+  <ul>
+    <li>忘了写<b>分号</b> <code>;</code></li>
+    <li>属性名和值之间用的是<b>等号</b> <code>=</code>，其实应该是<b>冒号</b> <code>:</code></li>
+    <li>花括号成对写反了：<code>{</code> 对应的是右花括号 <code>}</code>，不是圆括号</li>
+  </ul>
+</div>
+
+<h3>5.3 颜色怎么来的：红绿蓝和 hex</h3>
+<p>电脑屏幕由三种小灯组成：<b>红（Red）、绿（Green）、蓝（Blue）</b>，英文缩写 RGB，每种灯亮度从 0 到 255。</p>
+<pre><code>color: rgb(255, 0, 0);      /* 255 红、0 绿、0 蓝 → 纯红 */
+color: #ff0000;             /* 上面那一句的“十六进制”写法，也是纯红 */
+color: #ff6b6b;             /* 亮一点的珊瑚红，贪吃蛇的食物常用 */
+color: #1f2328;             /* 接近黑色的深灰，比纯黑柔和 */</code></pre>
+<p>
+  <code>#ff0000</code> 里的 <code>#</code> 读作 “hash”（井号），后面 6 位十六进制数，两两一组：
+  <b>ff</b> 是红色亮度、<b>00</b> 绿色、<b>00</b> 蓝色。ff 是最大的（等于 255），00 最小。
+</p>
+
+<div class="story">
+  <b>小故事 · 为什么是 0 到 255，为什么是 ff</b>
+  <p>
+    计算机最小只认“开”和“关”两种状态。<b>8 个开关</b>排成一排，能表示 0 到 255 共 256 种亮度（因为 2 的 8 次方 = 256）。
+    用十六进制写，最大的 255 正好是 <b>ff</b>，只要两个字符就够。所以红绿蓝各占 2 位，加起来 6 位。
+  </p>
+  <p>
+    每多一位，能表示的颜色就翻 16 倍。6 位数不过 1677 万种颜色，就装下了人眼能分辨的大多数颜色。
+  </p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="ch6">第 6 章 · 选择器：class 和 id 是什么</h2>
+
+<p>如果选择器只能写 <code>h1</code>、<code>p</code>，那所有 h1 都会变成同一个样子。想让某些元素<b>单独</b>变样，就要先给它们起名字。</p>
+
+<h3>6.1 三种基本选择器</h3>
+<table class="compare">
+  <tr><th>选择器</th><th>写法</th><th>选中谁</th><th>英文</th></tr>
+  <tr><td>标签选择器</td><td><code>p { }</code></td><td>页面上所有 p</td><td>tag selector</td></tr>
+  <tr><td>class 选择器</td><td><code>.card { }</code>（前面加点）</td><td>所有写了 class="card" 的元素</td><td>class = 类</td></tr>
+  <tr><td>id 选择器</td><td><code>#score { }</code>（前面加井号）</td><td>页面上唯一的那个东西</td><td>id = identifier（标识）</td></tr>
+</table>
+
+<pre><code>&lt;p class="card"&gt;第一张卡片&lt;/p&gt;
+&lt;p class="card"&gt;第二张卡片&lt;/p&gt;
+&lt;p id="score"&gt;得分：0&lt;/p&gt;</code></pre>
+
+<pre><code>.card {
+  background: #ffffff;
+  padding: 10px;
+}
+
+#score {
+  color: red;
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>class</td><td>类（同一类东西的统称）</td><td>n.</td></tr>
+    <tr><td>identifier</td><td>标识符（id 的全称）</td><td>n.</td></tr>
+    <tr><td>unique</td><td>唯一的</td><td>adj.</td></tr>
+    <tr><td>selector</td><td>选择器</td><td>n.</td></tr>
+    <tr><td>match</td><td>匹配（选择器“认领”元素）</td><td>v.</td></tr>
+  </table>
+</div>
+
+<h3>6.2 class 和 id 有什么区别？</h3>
+<table class="compare">
+  <tr><th></th><th>class</th><th>id</th></tr>
+  <tr><td>一个页面里能用几次</td><td>随便用多少次</td><td>只能有 1 次（不能重复）</td></tr>
+  <tr><td>能不能拆开写</td><td>能：<code>class="card big"</code></td><td>不能</td></tr>
+  <tr><td>CSS 里怎么写</td><td><code>.card</code>（点）</td><td><code>#score</code>（井号）</td></tr>
+  <tr><td>适合用来</td><td>确定外观（一堆东西长得一样）</td><td>唯一的东西：游戏画面、分数牌、按钮</td></tr>
+</table>
+
+<p>
+  记住一个口诀：<b>class 加点，id 加井号</b>。
+  再看看代码里的 <code>&lt;div id="game"&gt;</code>、<code>&lt;canvas id="board"&gt;</code> —— 这些在贪吃蛇里就是这么用的。
+</p>
+
+<div class="story">
+  <b>小故事 · id 的祖先：SGML 里的“唯一编号”</b>
+  <p>
+    HTML 里的 id，最早来自一种更古老、更庞大的标记语言 <b>SGML</b>（Standard Generalized Markup Language，标准通用标记语言）。
+    HTML 其实就是从 SGML 里“瘦身”出来的一种应用。
+  </p>
+  <p>
+    SGML 规定文档的每一样东西都可以有一个 <b>ID</b>（Identifier），像图书馆里每本书的编号，独一无二。
+    当年发明它的人是为了“检索方便”，结果今天你在浏览器控制台里用 <code>#board</code> 就能精确找到那块画布 —— 完全是同一个思路。
+  </p>
+</div>
+
+<h3>6.3 后代选择器：选“谁里面的谁”</h3>
+<pre><code>#game h2 {
+  color: white;
+}</code></pre>
+<p>意思是：“<b>id 为 game 的元素里</b>，所有的 h2”。中间用<b>空格</b>隔开，读作“里面的”。这个能力在贪吃蛇的打开页、结束页会用上。</p>
+
+<h3>6.4 行内样式（不推荐，但要知道）</h3>
+<pre><code>&lt;p style="color: red;"&gt;这一行是红的&lt;/p&gt;</code></pre>
+<p>
+  可以直接把 CSS 塞进标签里，叫 <b>inline style</b>（行内样式）。
+  它的问题在于：改的时候要一个个去找，而且优先级别最高，覆盖起来很麻烦。
+  <b>知道就行，平时尽量用 class 和 id。</b>
+</p>
+
+<!-- ============================================================ -->
+<h2 id="ch7">第 7 章 · 盒子模型：边距、内边距、边框</h2>
+
+<p>网页上每一样东西，浏览器都把它当成一个<b>长方形的盒子</b>（box）。这个盒子由里到外分四层：</p>
+
+<ol>
+  <li><b>content（内容）</b>：文字、图片本身。</li>
+  <li><b>padding（内边距）</b>：内容和边框之间的“填充”。</li>
+  <li><b>border（边框）</b>：盒子的边线。</li>
+  <li><b>margin（外边距）</b>：盒子外面，和别的盒子之间的距离。</li>
+</ol>
+
+<div class="demo">
+  <p class="demo-title">看一眼这个盒子：橙色的芯是内容，浅橙是 padding，红色粗线是 border，盒子外面那圈空白是 margin</p>
+  <div class="box-demo">
+    <div class="box-demo-inner">content</div>
+  </div>
+</div>
+
+<div class="wordlist">
+  <table>
+    <tr><td>content</td><td>内容</td><td>n.</td></tr>
+    <tr><td>padding</td><td>内边距（往里垫）</td><td>n.</td></tr>
+    <tr><td>border</td><td>边框</td><td>n.</td></tr>
+    <tr><td>margin</td><td>外边距（外面的空地）</td><td>n.</td></tr>
+    <tr><td>box</td><td>盒子</td><td>n.</td></tr>
+    <tr><td>outer / inner</td><td>外面的 / 里面的</td><td>adj.</td></tr>
+    <tr><td>spacing</td><td>间距</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>怎么记 padding 和 margin？</b>
+  <b>padding</b> 和 <b>border</b> 都是 p、r 开头的？用“边界”想：<b>border 是墙</b>；padding 是墙里面的<b>垫子</b>（在内容身边）；margin 是墙外面的<b>院子</b>（在别人身边）。
+</div>
+
+<h3>7.1 简写：一个属性管四边</h3>
+<pre><code>padding: 10px;                  /* 上下左右都是 10px */
+padding: 10px 20px;             /* 上下 10px，左右 20px */
+padding: 10px 20px 30px 40px;   /* 上 右 下 左（顺时针） */
+
+margin: 0 auto;                 /* 上下 0，左右自动 —— 水平居中 */
+</code></pre>
+<p>
+  <b>px</b> 是 pixel（像素）的缩写，屏幕上最小的一个点。
+  如果顺口，可以读成 “10 像素”。
+</p>
+
+<div class="wordlist">
+  <table>
+    <tr><td>pixel</td><td>像素（px）</td><td>n.</td></tr>
+    <tr><td>em / rem</td><td>相对于字体大小的单位</td><td>n.</td></tr>
+    <tr><td>percent</td><td>百分比（%）</td><td>n.</td></tr>
+    <tr><td>auto</td><td>自动</td><td>adj.</td></tr>
+    <tr><td>clockwise</td><td>顺时针（简写的顺序）</td><td>adv.</td></tr>
+  </table>
+</div>
+
+<h3>7.2 宽度和高度</h3>
+<pre><code>#board {
+  width: 480px;
+  height: 480px;
+}
+</code></pre>
+<p>
+  <b>width</b>（宽度）和 <b>height</b>（高度）决定盒子的尺寸。
+  到了贪吃蛇里，画布就是这个尺寸：<b>24 格 × 20 像素 = 480 像素</b>。
+</p>
+
+<h3>7.3 box-sizing：一个让所有新手头疼的坑</h3>
+<p>
+  默认情况下，<code>width: 480px</code> 只算内容，padding 和 border 会<b>额外</b>加上去。
+  所以一个“480 宽的盒子”加上 padding 以后，实际会超过屏幕。
+</p>
+<p>加一句：</p>
+<pre><code>* {
+  box-sizing: border-box;
+}</code></pre>
+<p>
+  意思是：让 width 把 padding 和 border 也算进去。
+  <code>*</code> 是“全部元素”的通配符；<b>border-box</b> 字面意思是“边框盒子”，即“宽度包含到边框为止”。
+  <b>几乎所有现代网站第一句 CSS 都是它</b>。
+</p>
+
+<div class="story">
+  <b>小故事 · 为什么突然给网页加了第五种盒子</b>
+  <p>
+    2012 年，当时的 CSS 标准里，盒子尺寸的计算方式只有一种：width 只管内容。
+    这让所有写网页的人都得天天算“边框要塞到哪里”。
+    微软在 IE 浏览器里曾经用另一种算法（宽度包含边框），结果反而让页面更好算，但大家为了兼容不得不给两种浏览器写两套代码。
+  </p>
+  <p>
+    于是 W3C 后来正式加入了 <b>box-sizing</b> 属性。一句 <code>box-sizing: border-box</code>，
+    让盒子回到 IE 时代那种“所见即所得”的尺寸 —— 这就是今天几乎所有网站都会写第一句 <code>* { box-sizing: border-box; }</code> 的原因。
+  </p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="ch8">第 8 章 · 颜色、字体、居中</h2>
+
+<h3>8.1 文字相关的属性</h3>
+<pre><code>body {
+  color: #1f2328;                    /* 文字颜色 */
+  background: #0f1115;               /* 背景颜色 */
+  font-size: 16px;                   /* 字号 */
+  font-family: "Segoe UI", sans-serif;  /* 字体 */
+  font-weight: bold;                 /* 字重：粗体 */
+  line-height: 1.75;                 /* 行高：每行隔多远 */
+  text-align: center;                /* 文字对齐：居中 */
+}</code></pre>
+
+<table class="compare">
+  <tr><th>属性</th><th>单词意思</th><th>作用</th></tr>
+  <tr><td><code>color</code></td><td>颜色</td><td>文字的颜色</td></tr>
+  <tr><td><code>background</code></td><td>背景</td><td>背后那一块的颜色</td></tr>
+  <tr><td><code>font</code></td><td>字体</td><td>font-size 字号、font-family 字体族、font-weight 字重</td></tr>
+  <tr><td><code>size</code></td><td>尺寸</td><td>字号有多大</td></tr>
+  <tr><td><code>family</code></td><td>家族</td><td>用哪一种字体，可以用逗号写一串候选</td></tr>
+  <tr><td><code>weight</code></td><td>重量</td><td>粗还是细：normal（普通）、bold（粗）</td></tr>
+  <tr><td><code>line</code> / <code>height</code></td><td>行 / 高度</td><td>行高</td></tr>
+  <tr><td><code>align</code></td><td>对齐</td><td>text-align 文字对齐</td></tr>
+</table>
+
+<div class="wordlist">
+  <table>
+    <tr><td>background</td><td>背景</td><td>n.</td></tr>
+    <tr><td>font</td><td>字体</td><td>n.</td></tr>
+    <tr><td>family</td><td>家族（字体家族）</td><td>n.</td></tr>
+    <tr><td>weight</td><td>重量（字重）</td><td>n.</td></tr>
+    <tr><td>align</td><td>对齐</td><td>v.</td></tr>
+    <tr><td>sans-serif</td><td>无衬线字体（sans = 没有）</td><td>n.</td></tr>
+    <tr><td>serif</td><td>有衬线的字体（宋体那类）</td><td>n.</td></tr>
+  </table>
+</div>
+
+<h3>8.2 居中的三件事</h3>
+<p>“居中”是新手最常卡住的地方。记住：<b>文字居中</b>和<b>盒子居中</b>是两回事。</p>
+<ul>
+  <li><b>文字居中</b>：<code>text-align: center;</code></li>
+  <li><b>一个盒子水平居中</b>：<code>margin: 0 auto;</code>（有宽度才有效）</li>
+  <li><b>盒子里的东西整体居中</b>：用第 9 章的 flex：<code>display: flex; justify-content: center; align-items: center;</code></li>
+</ul>
+
+<h3>8.3 圆角、阴影、透明度</h3>
+<pre><code>.card {
+  border-radius: 12px;                /* 圆角 */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .35);   /* 阴影 */
+  opacity: .8;                        /* 透明度：0 是透明，1 是不透明 */
+  cursor: pointer;                    /* 鼠标移上来变成小手 */
+}</code></pre>
+
+<div class="wordlist">
+  <table>
+    <tr><td>radius</td><td>半径（圆角）</td><td>n.</td></tr>
+    <tr><td>shadow</td><td>阴影</td><td>n.</td></tr>
+    <tr><td>opacity</td><td>不透明度</td><td>n.</td></tr>
+    <tr><td>transparent</td><td>透明的</td><td>adj.</td></tr>
+    <tr><td>cursor</td><td>光标（鼠标指针）</td><td>n.</td></tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="ch9">第 9 章 · 布局入门：display、flex、grid</h2>
+
+<h3>9.1 display：元素怎么排队</h3>
+<table class="compare">
+  <tr><th>display 的值</th><th>中文</th><th>行为</th></tr>
+  <tr><td><code>block</code></td><td>块级</td><td>独占一整行，从上往下堆。div、h1、p 默认都是这样</td></tr>
+  <tr><td><code>inline</code></td><td>行内</td><td>像文字一样排在一行里。span、a 默认这样</td></tr>
+  <tr><td><code>inline-block</code></td><td>行内块</td><td>排在一行里，但能设宽高</td></tr>
+  <tr><td><code>none</code></td><td>无</td><td>直接隐藏，像不存在一样（贪吃蛇的结束页靠它控制显示）</td></tr>
+  <tr><td><code>flex</code></td><td>弹性盒</td><td>让里面的孩子排成一排，或者居中</td></tr>
+  <tr><td><code>grid</code></td><td>网格</td><td>把区域划成格子（贪吃蛇的画布就是一个个格子叠起来的）</td></tr>
+</table>
+
+<div class="demo">
+  <p class="demo-title">block 的效果（每块独占一行）</p>
+  <div class="disp-block">我是一个 block</div>
+  <div class="disp-block">我也是</div>
+  <p class="demo-title" style="margin-top:12px">inline 的效果（跟文字挤在一行）</p>
+  这是一段文字 <span class="disp-inline">我是一个 inline</span> 接着后面还有文字。
+</div>
+
+<div class="wordlist">
+  <table>
+    <tr><td>display</td><td>显示</td><td>v./n.</td></tr>
+    <tr><td>block</td><td>块</td><td>n.</td></tr>
+    <tr><td>inline</td><td>行内（在行里）</td><td>adj.</td></tr>
+    <tr><td>flex</td><td>灵活伸缩</td><td>v.</td></tr>
+    <tr><td>grid</td><td>网格</td><td>n.</td></tr>
+    <tr><td>column</td><td>列</td><td>n.</td></tr>
+    <tr><td>row</td><td>行</td><td>n.</td></tr>
+  </table>
+</div>
+
+<h3>9.2 flex：让东西排成一排、居中</h3>
+<pre><code>.wrap {
+  display: flex;                /* 变成弹性盒子 */
+  justify-content: center;      /* 主轴对齐：居中 */
+  align-items: center;          /* 交叉轴对齐：居中 */
+  gap: 10px;                    /* 孩子之间的间距 */
+}</code></pre>
+
+<div class="demo">
+  <p class="demo-title">实际效果</p>
+  <div class="flex-demo">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+  </div>
+</div>
+
+<div class="wordlist">
+  <table>
+    <tr><td>justify</td><td>对齐、调整（justify-content = 内容对齐）</td><td>v.</td></tr>
+    <tr><td>align</td><td>对齐</td><td>v.</td></tr>
+    <tr><td>items</td><td>项目（里面的孩子）</td><td>n.</td></tr>
+    <tr><td>gap</td><td>缝隙、间距</td><td>n.</td></tr>
+    <tr><td>wrap</td><td>包裹、换行</td><td>v./n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>记这个的窍门</b>
+  一整个页面居中：
+  <b>display: flex</b> → <b>justify-content: center</b> → <b>align-items: center</b>。
+  这三句是“让一个盒子在正中间”的固定公式，做完贪吃蛇你也就背下来了。
+</div>
+
+<h3>9.3 grid：把区域划成格子</h3>
+<pre><code>.board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);   /* 6 列，每列一样宽 */
+  gap: 4px;
+}</code></pre>
+<p>
+  <b>grid-template-columns</b> 意思是“网格模板的列”；<b>repeat(6, 1fr)</b> 意思是“重复 6 次，每次占 1 份”。
+  <b>fr</b> 是 fraction（分数、份额）的缩写。
+</p>
+
+<div class="demo">
+  <p class="demo-title">一个 6 列的小网格（画布由几十个小方格拼成，贪吃蛇就是这样画的）</p>
+  <div class="grid-demo">
+    <div></div><div></div><div></div><div class="food"></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div><div></div>
+  </div>
+</div>
+
+<div class="wordlist">
+  <table>
+    <tr><td>template</td><td>模板</td><td>n.</td></tr>
+    <tr><td>repeat</td><td>重复</td><td>v.</td></tr>
+    <tr><td>fraction</td><td>分数、份额（fr）</td><td>n.</td></tr>
+  </table>
+</div>
+
+<h3>9.4 学完这一章的检查</h3>
+<ol>
+  <li>打开 <a href="样板_卡片.html">样板_卡片.html</a>，把卡片背景色改成别的颜色，保存刷新。</li>
+  <li>把 <code>border-radius</code> 从 12px 改成 0，看圆角消失。</li>
+  <li>把 <code>margin: 0 auto</code> 删掉，看卡片跑到左边。</li>
+  <li>把卡片里的 <code>display: flex</code> 删掉，看文字变成从上到下堆。</li>
+</ol>
+
+<div class="story">
+  <b>小故事 · CSS 一开始只是个“排版建议”</b>
+  <p>
+    1994 年，网页刚兴起几年，HTML 里其实是可以直接写“文字颜色”和“字体”的，比如 <code>&lt;font color="red"&gt;</code>。
+    但这样写的问题很快出现：一页 500 行，想改个颜色，得一行一行改。
+  </p>
+  <p>
+    挪威的一个工程师 <b>Håkon Wium Lie</b>（哈肯·维姆·莱）提出了一个想法：把“内容”和“长相”分开，
+    长相单独写在一个文件里。这就是 CSS 的起点。后来他和 Tim Berners-Lee 一起在 CERN 工作，推动它成了正式标准。
+  </p>
+  <p>
+    “<b>Cascading</b>”（层叠）这个词，就来自他的一个原则：多个样式表可以并存，浏览器按优先级一层一层盖上去。
+    所以，你写下的每一条 CSS，都是在这条很长的“瀑布”上盖的一层。
+  </p>
+</div>
+
+<h3>本章单词速记卡</h3>
+<div class="wordlist">
+  <table>
+    <tr><td>layout</td><td>布局</td><td>n.</td></tr>
+    <tr><td>position</td><td>位置（position: relative / absolute）</td><td>n.</td></tr>
+    <tr><td>relative</td><td>相对的</td><td>adj.</td></tr>
+    <tr><td>absolute</td><td>绝对的</td><td>adj.</td></tr>
+    <tr><td>fixed</td><td>固定的</td><td>adj.</td></tr>
+    <tr><td>overlay</td><td>遮罩层（覆盖在上面的那一层）</td><td>n.</td></tr>
+    <tr><td>z-index</td><td>层叠顺序（z 轴：垂直于屏幕的方向）</td><td>n.</td></tr>
+    <tr><td>top / bottom / left / right</td><td>上 / 下 / 左 / 右</td><td>n.</td></tr>
+  </table>
+</div>
+
+<div class="note">
+  <b>position 先不用学得很透</b>
+  贪吃蛇教程里，我们只会用到一句 <code>position: relative</code> + <code>position: absolute</code> 的组合（让结束页面盖在画布上面）。
+  学的时候再回来翻这句：<b>relative 是“我是它里面的参照物”，absolute 是“我贴着参照物摆”</b>。
+</div>
+
+<div class="foot">
+  <p>← 上一篇：<a href="第1-4章_HTML基础.html">第 1 — 4 章 · HTML 基础</a> ｜ 下一篇：<a href="第10-11章_贪吃蛇教程.html">第 10 — 11 章 · 贪吃蛇</a> →</p>
+  <p>遇到不懂的地方，回到 <a href="index.html">目录页</a> 的“常见错误”里查一查。</p>
+</div>
+
+</body>
+</html>
