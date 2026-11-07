@@ -5,14 +5,332 @@
 <title>HTML 入门到贪吃蛇 · 目录</title>
 
 <style>
-  .chapter { border: 1px solid #e4e7ec; border-radius: 10px; padding: 14px 18px; display: block; }
+  :root {
+    --ink: #1f2328;
+    --quiet: #667085;
+    --line: #e4e7ec;
+    --accent: #1a6dff;
+    --accent-bg: #eef4ff;
+    --code-bg: #f6f8fa;
+    --story-bg: #fff8e6;
+    --story-line: #f0b429;
+    --warn-bg: #fff1f0;
+    --warn-line: #ef4b4b;
+    --ok-bg: #eefaf1;
+    --ok-line: #2ea043;
+    --word-bg: #f4f0ff;
+    --word-line: #7c5cff;
+  }
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 32px 20px 80px;
+    font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 16px;
+    background: #fcfcfd;
+  }
+
+  h1 { font-size: 2em; margin: 0 0 4px; letter-spacing: 1px; }
+  h2 { font-size: 1.3em; margin: 44px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 1.05em; margin: 22px 0 6px; }
+  .sub { color: var(--quiet); margin: 0 0 20px; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+    background: var(--code-bg); padding: 1px 5px; border-radius: 4px; font-size: .92em;
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; font-size: .86em; line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; }
+
+  .note, .story, .warn, .ok {
+    padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: .95em;
+  }
+  .note { border-left: 4px solid var(--accent); background: var(--accent-bg); }
+  .note b:first-child { color: var(--accent); }
+  .story { border-left: 4px solid var(--story-line); background: var(--story-bg); }
+  .story b:first-child { color: #b06f00; }
+  .warn { border-left: 4px solid var(--warn-line); background: var(--warn-bg); }
+  .warn b:first-child { color: var(--warn-line); }
+  .ok { border-left: 4px solid var(--ok-line); background: var(--ok-bg); }
+  .ok b:first-child { color: #1a7f37; }
+
+  .wordlist {
+    border: 1px solid var(--word-line); background: var(--word-bg);
+    border-radius: 8px; padding: 6px 14px; margin: 14px 0; font-size: .93em;
+  }
+  .wordlist table { width: 100%; border-collapse: collapse; }
+  .wordlist td { padding: 4px 6px; border-bottom: 1px dashed #d8cfff; vertical-align: top; }
+  .wordlist td:first-child { width: 11em; font-family: Consolas, monospace; white-space: nowrap; }
+  .wordlist td:last-child { width: 4.5em; white-space: nowrap; color: var(--quiet); }
+
+  .compare { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: .93em; }
+  .compare th, .compare td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  .compare th { background: var(--code-bg); }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* 目录卡片 */
+  .chapters { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 18px 0; }
+  .chapter {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 18px;
+    background: #fff;
+    color: var(--ink);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .chapter:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+    box-shadow: 0 6px 20px rgba(26, 109, 255, .12);
+  }
+  .chapter .num { font-size: .82em; color: var(--accent); font-weight: bold; letter-spacing: 1px; }
+  .chapter .name { font-size: 1.1em; font-weight: bold; margin: 2px 0 2px; }
+  .chapter .desc { font-size: .9em; color: var(--quiet); }
+
+  .quick {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .quick a {
+    display: block;
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    color: var(--ink);
+    font-size: .93em;
+  }
+  .quick a:hover { border-color: var(--accent); }
+  .quick a b { color: var(--accent); }
+
+  ol.steps { padding-left: 1.4em; }
+  ol.steps li { margin: 6px 0; }
+
+  .foot { margin-top: 60px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--quiet); font-size: .9em; }
 </style>
 </head>
 
 <body>
+
 <h1>HTML 入门到贪吃蛇</h1>
-<p><a href="第1-4章_HTML基础.html">第 1 — 4 章 · HTML 基础</a></p>
-<p><a href="第5-9章_CSS基础.html">第 5 — 9 章 · CSS 基础</a></p>
-<p><a href="第10-11章_贪吃蛇教程.html">第 10 — 11 章 · 从零做贪吃蛇</a></p>
+<p class="sub">写给“不擅长记忆”的你 · 每一行代码都配齐完整的单词和翻译</p>
+
+<p>
+  这是一套从零开始的网页教程。学完以后，你会亲手做出一个能玩的贪吃蛇。
+  遇到不认识的单词不用背：<b>每个章节里都配了单词表</b>，
+  最后还有一个<a href="#glossary">速查词表</a>，随时回翻就好。
+</p>
+
+<div class="ok">
+  <b>不想逐步学？直接玩</b>
+  打开 <a href="贪吃蛇_最终版.html">贪吃蛇_最终版.html</a>，用方向键控制，空格暂停，R 重开。<br>
+  打开 <a href="贪吃蛇_原型版.html">贪吃蛇_原型版.html</a>，这是我最开始写的那一版，里面留了两个有点“坑”的地方，学着学着你就明白坑在哪了。
+</div>
+
+<h2>学习顺序</h2>
+
+<div class="chapters">
+  <a class="chapter" href="第1-4章_HTML基础.html">
+    <div class="num">第 1 — 4 章</div>
+    <div class="name">HTML 基础</div>
+    <div class="desc">网页是什么、HTML 骨架、标题段落列表图片、第一个小练习</div>
+  </a>
+
+  <a class="chapter" href="第5-9章_CSS基础.html">
+    <div class="num">第 5 — 9 章</div>
+    <div class="name">CSS 基础</div>
+    <div class="desc">让网页好看：选择器、盒子模型、颜色字体、居中、flex 和 grid 布局</div>
+  </a>
+
+  <a class="chapter" href="第10-11章_贪吃蛇教程.html">
+    <div class="num">第 10 — 11 章</div>
+    <div class="name">从零做贪吃蛇（重点）</div>
+    <div class="desc">11 个小步骤：从“画一个方块”到“能玩的蛇”，每一步都能单独运行</div>
+  </a>
+</div>
+
+<h2>随时能打开的小样板</h2>
+<p>这些是教程里出现的完整代码，做成了可以直接打开看效果的文件。看效果、改一句、刷新，是最快的学习方法。</p>
+
+<div class="quick">
+  <a href="样板_你好世界.html"><b>样板：</b>你好世界 —— 第 2 章的最小骨架</a>
+  <a href="样板_我的介绍页.html"><b>样板：</b>我的介绍页 —— 第 3 章的拼装结果</a>
+  <a href="样板_卡片.html"><b>样板：</b>一张卡片 —— 第 5 — 9 章的 CSS 效果</a>
+  <a href="贪吃蛇_最终版.html"><b>成品：</b>贪吃蛇最终版</a>
+  <a href="贪吃蛇_原型版.html"><b>原型：</b>贪吃蛇最早的那一版</a>
+  <a href="贪吃蛇_步骤/step1.html"><b>第 1 步：</b>画布上出现一个方块</a>
+  <a href="贪吃蛇_步骤/step5.html"><b>第 5 步：</b>它开始自己走了</a>
+  <a href="贪吃蛇_步骤/step8.html"><b>第 8 步：</b>能吃了</a>
+  <a href="贪吃蛇_步骤/step10.html"><b>第 10 步：</b>有了开始页和结束页</a>
+  <a href="贪吃蛇_步骤/step11.html"><b>第 11 步：</b>修好“快速连按会自杀”</a>
+</div>
+
+<h2 id="glossary">速查卡：HTML 常用标签</h2>
+
+<p>不用背。写代码的时候回头查这张表，见过三五次自然就熟了。</p>
+
+<table class="compare">
+  <tr><th>标签</th><th>英文全称</th><th>中文</th><th>例子</th></tr>
+  <tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>document type</td><td>文档类型</td><td>写在第一行</td></tr>
+  <tr><td><code>&lt;html&gt;</code></td><td>HyperText Markup Language</td><td>整个网页</td><td><code>&lt;html lang="zh-CN"&gt;…&lt;/html&gt;</code></td></tr>
+  <tr><td><code>&lt;head&gt;</code></td><td>head</td><td>头部</td><td>给浏览器看的信息</td></tr>
+  <tr><td><code>&lt;meta&gt;</code></td><td>metadata</td><td>元信息</td><td><code>&lt;meta charset="UTF-8"&gt;</code></td></tr>
+  <tr><td><code>&lt;title&gt;</code></td><td>title</td><td>网页标题</td><td>标签栏上那个字</td></tr>
+  <tr><td><code>&lt;body&gt;</code></td><td>body</td><td>身体（正文）</td><td>用户能看到的内容</td></tr>
+  <tr><td><code>&lt;style&gt;</code></td><td>style</td><td>样式（CSS 区）</td><td>写在 head 里</td></tr>
+  <tr><td><code>&lt;script&gt;</code></td><td>script</td><td>脚本（JavaScript 区）</td><td>游戏逻辑</td></tr>
+  <tr><td><code>&lt;h1&gt;</code>…<code>&lt;h6&gt;</code></td><td>heading</td><td>标题 1–6 级</td><td><code>&lt;h1&gt;大标题&lt;/h1&gt;</code></td></tr>
+  <tr><td><code>&lt;p&gt;</code></td><td>paragraph</td><td>段落</td><td><code>&lt;p&gt;一段话&lt;/p&gt;</code></td></tr>
+  <tr><td><code>&lt;br&gt;</code></td><td>break</td><td>换行</td><td>单身标签</td></tr>
+  <tr><td><code>&lt;hr&gt;</code></td><td>horizontal rule</td><td>水平分隔线</td><td>单身标签</td></tr>
+  <tr><td><code>&lt;strong&gt;</code></td><td>strong</td><td>重要（加粗）</td><td><code>&lt;strong&gt;重点&lt;/strong&gt;</code></td></tr>
+  <tr><td><code>&lt;em&gt;</code></td><td>emphasis</td><td>强调（斜体）</td><td><code>&lt;em&gt;强调&lt;/em&gt;</code></td></tr>
+  <tr><td><code>&lt;ul&gt;</code></td><td>unordered list</td><td>无序列表</td><td>圆点列表</td></tr>
+  <tr><td><code>&lt;ol&gt;</code></td><td>ordered list</td><td>有序列表</td><td>数字列表</td></tr>
+  <tr><td><code>&lt;li&gt;</code></td><td>list item</td><td>列表项</td><td>写在 ul / ol 里面</td></tr>
+  <tr><td><code>&lt;img&gt;</code></td><td>image</td><td>图片</td><td><code>&lt;img src="a.jpg" alt="说明"&gt;</code></td></tr>
+  <tr><td><code>&lt;a&gt;</code></td><td>anchor</td><td>链接（锚）</td><td><code>&lt;a href="网址"&gt;点我&lt;/a&gt;</code></td></tr>
+  <tr><td><code>&lt;div&gt;</code></td><td>division</td><td>区域 / 块</td><td>用来装东西的盒子</td></tr>
+  <tr><td><code>&lt;span&gt;</code></td><td>span</td><td>行内小片段</td><td>用来包一小段字</td></tr>
+  <tr><td><code>&lt;button&gt;</code></td><td>button</td><td>按钮</td><td><code>&lt;button&gt;开始&lt;/button&gt;</code></td></tr>
+  <tr><td><code>&lt;canvas&gt;</code></td><td>canvas</td><td>画布</td><td><code>&lt;canvas id="board"&gt;&lt;/canvas&gt;</code></td></tr>
+  <tr><td><code>&lt;!-- 注释 --&gt;</code></td><td>comment</td><td>注释</td><td>浏览器忽略</td></tr>
+</table>
+
+<h3>常用属性</h3>
+<table class="compare">
+  <tr><th>属性</th><th>英文</th><th>中文</th><th>用在</th></tr>
+  <tr><td><code>id</code></td><td>identifier</td><td>唯一标识</td><td>每个页面只能有一个同名 id</td></tr>
+  <tr><td><code>class</code></td><td>class</td><td>类</td><td>可以重复，用来定样式</td></tr>
+  <tr><td><code>src</code></td><td>source</td><td>来源</td><td>图片地址</td></tr>
+  <tr><td><code>href</code></td><td>hypertext reference</td><td>超文本引用</td><td>链接地址</td></tr>
+  <tr><td><code>alt</code></td><td>alternative</td><td>替代文字</td><td>图片的说明</td></tr>
+  <tr><td><code>width</code> / <code>height</code></td><td>width / height</td><td>宽 / 高</td><td>尺寸（单位像素）</td></tr>
+  <tr><td><code>lang</code></td><td>language</td><td>语言</td><td>写在 html 上</td></tr>
+</table>
+
+<h3>速查卡：CSS 常用属性</h3>
+<table class="compare">
+  <tr><th>属性</th><th>英文</th><th>中文</th></tr>
+  <tr><td><code>color</code></td><td>color</td><td>文字颜色</td></tr>
+  <tr><td><code>background</code></td><td>background</td><td>背景</td></tr>
+  <tr><td><code>font-size</code></td><td>font size</td><td>字号</td></tr>
+  <tr><td><code>font-family</code></td><td>font family</td><td>字体</td></tr>
+  <tr><td><code>font-weight</code></td><td>font weight</td><td>粗细（bold = 粗）</td></tr>
+  <tr><td><code>text-align</code></td><td>text align</td><td>文字对齐（center = 居中）</td></tr>
+  <tr><td><code>line-height</code></td><td>line height</td><td>行高</td></tr>
+  <tr><td><code>width</code> / <code>height</code></td><td>width / height</td><td>宽 / 高</td></tr>
+  <tr><td><code>margin</code></td><td>margin</td><td>外边距（盒子外面）</td></tr>
+  <tr><td><code>padding</code></td><td>padding</td><td>内边距（盒子里面）</td></tr>
+  <tr><td><code>border</code></td><td>border</td><td>边框</td></tr>
+  <tr><td><code>border-radius</code></td><td>border radius</td><td>圆角</td></tr>
+  <tr><td><code>box-shadow</code></td><td>box shadow</td><td>阴影</td></tr>
+  <tr><td><code>box-sizing</code></td><td>box sizing</td><td>盒子尺寸算法（border-box 常用）</td></tr>
+  <tr><td><code>display</code></td><td>display</td><td>怎么排队：block / inline / flex / grid / none</td></tr>
+  <tr><td><code>flex</code></td><td>flexible</td><td>弹性布局</td></tr>
+  <tr><td><code>grid</code></td><td>grid</td><td>网格布局</td></tr>
+  <tr><td><code>justify-content</code></td><td>justify content</td><td>主要方向上的对齐</td></tr>
+  <tr><td><code>align-items</code></td><td>align items</td><td>交叉方向上的对齐</td></tr>
+  <tr><td><code>gap</code></td><td>gap</td><td>间距</td></tr>
+  <tr><td><code>position</code></td><td>position</td><td>定位（relative / absolute）</td></tr>
+  <tr><td><code>opacity</code></td><td>opacity</td><td>透明度</td></tr>
+  <tr><td><code>cursor</code></td><td>cursor</td><td>鼠标指针样式（pointer = 小手）</td></tr>
+</table>
+
+<h3>速查卡：JavaScript 常用词</h3>
+<table class="compare">
+  <tr><th>代码</th><th>英文</th><th>中文</th></tr>
+  <tr><td><code>let</code> / <code>const</code></td><td>let / constant</td><td>声明变量 / 常量</td></tr>
+  <tr><td><code>function</code></td><td>function</td><td>函数</td></tr>
+  <tr><td><code>return</code></td><td>return</td><td>返回（立刻离开函数）</td></tr>
+  <tr><td><code>if</code> / <code>else</code></td><td>if / else</td><td>如果 / 否则</td></tr>
+  <tr><td><code>for</code> / <code>while</code></td><td>for / while</td><td>循环</td></tr>
+  <tr><td><code>document.getElementById</code></td><td>get element by id</td><td>按 id 拿到元素</td></tr>
+  <tr><td><code>addEventListener</code></td><td>add event listener</td><td>添加事件监听器</td></tr>
+  <tr><td><code>classList.add</code></td><td>class list add</td><td>加一个 class</td></tr>
+  <tr><td><code>textContent</code></td><td>text content</td><td>元素的文字内容</td></tr>
+  <tr><td><code>unshift</code> / <code>push</code></td><td>unshift / push</td><td>在数组前面 / 后面加一个</td></tr>
+  <tr><td><code>pop</code> / <code>shift</code></td><td>pop / shift</td><td>去掉数组最后一个 / 第一个</td></tr>
+  <tr><td><code>forEach</code></td><td>for each</td><td>对每一项都做一次</td></tr>
+  <tr><td><code>some</code></td><td>some</td><td>是不是至少有一个符合</td></tr>
+  <tr><td><code>Math.random</code></td><td>math random</td><td>随机数</td></tr>
+  <tr><td><code>Math.floor</code></td><td>math floor</td><td>向下取整</td></tr>
+  <tr><td><code>localStorage</code></td><td>local storage</td><td>本地存储</td></tr>
+  <tr><td><code>requestAnimationFrame</code></td><td>request animation frame</td><td>请求下一帧（做动画用）</td></tr>
+</table>
+
+<h2>常见错误对照表</h2>
+
+<p>下面这些都是新手最常碰到的。报错了先来这找一找，80% 的问题都能对号入座。</p>
+
+<table class="compare">
+  <tr><th>你看到的现象</th><th>最可能的原因</th><th>怎么办</th></tr>
+  <tr><td>中文变成一串乱码</td><td>没写 <code>&lt;meta charset="UTF-8"&gt;</code></td><td>补上这一行，放在 <code>&lt;head&gt;</code> 里</td></tr>
+  <tr><td>双击文件，用记事本打开了</td><td>后缀不是 .html</td><td>检查是不是变成了 .txt；右键 → 打开方式 → 选浏览器</td></tr>
+  <tr><td>页面一片空白</td><td>标签没闭合 / 内容写到了 <code>&lt;/body&gt;</code> 外面</td><td>检查每一个 <code>&lt;xxx&gt;</code> 是不是都有 <code>&lt;/xxx&gt;</code></td></tr>
+  <tr><td>图片显示一个破图标</td><td>src 的路径或文件名写错了</td><td>图片和网页放在同一个文件夹，文件名区分大小写</td></tr>
+  <tr><td>圆点或数字列表没出来</td><td>li 外面没有 ul 或 ol</td><td>把 li 放进列表容器里</td></tr>
+  <tr><td>CSS 完全没生效</td><td>花括号写成了圆括号、漏了分号</td><td>检查 <code>{ }</code> 和 <code>;</code>；选择器里的点是英文句号 .</td></tr>
+  <tr><td>改了 CSS 但没变化</td><td>没保存，或者没有刷新</td><td>Ctrl + S 保存，回到浏览器按 F5 刷新</td></tr>
+  <tr><td>控制台报 “null”</td><td>getElementById 里的 id 和标签上的 id 对不上</td><td>两边名字必须一模一样（大小写也算）</td></tr>
+  <tr><td>控制台报 “is not a function”</td><td>拼写错了：中文逗号、中文引号、多了个空格</td><td>把输入法切到英文；检查 <code>" "</code> 和 <code>' '</code> 是不是真的英文</td></tr>
+  <tr><td>按方向键整个页面在滚</td><td>没有 <code>event.preventDefault()</code></td><td>第 10 章有讲：在 keydown 里先把它拦下来</td></tr>
+  <tr><td>蛇撞进自己身体还以为没按错</td><td>方向改得太早（第 11 章那个坑）</td><td>用 nextDirection 缓冲：走一步之前才换方向</td></tr>
+  <tr><td>画布是空的</td><td>getContext 里写成了 "2D"，返回 null</td><td>必须是 <code>"2d"</code>，小写</td></tr>
+</table>
+
+<div class="note">
+  <b>最重要的一个习惯：按 F12</b>
+  在浏览器里按 F12 打开开发者工具，点 “Console”（控制台）标签页。
+  代码一报错，那里就会出现 <b>红色的一行字</b>，还会告诉你“在第几行”。
+  看不懂没关系，把那一行红色字抄下来，回 <a href="#glossary">上面的对照表</a> 里找。
+</div>
+
+<h2>学习路线建议</h2>
+
+<ol class="steps">
+  <li><b>先玩一遍</b>：打开 <a href="贪吃蛇_最终版.html">贪吃蛇_最终版.html</a>，你知道目标是什么，才学得进去。</li>
+  <li><b>第 1 — 4 章</b>：跟着写一个“我的介绍页”。不追求好看，能打开就行。</li>
+  <li><b>第 5 — 9 章</b>：改 <a href="样板_卡片.html">样板_卡片.html</a>，每改一个属性就刷新看一次。</li>
+  <li><b>第 10 章</b>：从 <a href="贪吃蛇_步骤/step1.html">step1</a> 开始，<b>每一步都自己抄一遍</b>，跑通了再抄下一个。</li>
+  <li><b>第 11 章</b>：理解“快速连按会自杀”那个坑，你会比很多教程都懂贪吃蛇。</li>
+  <li><b>自己改</b>：改颜色、改速度、加暂停、加最高分——贪吃蛇最终版里这四样都已经有了，读得懂你就毕业了。</li>
+</ol>
+
+<div class="warn">
+  <b>不要做的一件事：一开始就对着完整代码逐行“背”</b>
+  你不需要记住任何代码。你需要的只是：<b>知道每一段在干什么</b>。
+  等到真要写的时候，再回来查速查卡，抄一抄、改一改，几次就熟了。
+</div>
+
+<h2>关于“代码的由来”那些小故事</h2>
+<p>整套教程里夹了不少小故事，你可以按兴趣翻：</p>
+<ul>
+  <li>HTML 名字里的 “Hyper” 从哪来 —— <a href="第1-4章_HTML基础.html#ch1">第 1 章</a></li>
+  <li>为什么第一个程序都叫 “Hello, World!” —— <a href="第1-4章_HTML基础.html#ch4">第 4 章</a></li>
+  <li>为什么颜色是 0 到 255、写着 #ff0000 —— <a href="第5-9章_CSS基础.html#ch5">第 5 章</a></li>
+  <li>CSS 是怎么被发明出来的 —— <a href="第5-9章_CSS基础.html#ch9">第 9 章</a></li>
+  <li>贪吃蛇 1976 年叫“封锁” —— <a href="第10-11章_贪吃蛇教程.html#s5">第 10 章第 5 步</a></li>
+  <li>requestAnimationFrame 和浏览器游戏 —— <a href="第10-11章_贪吃蛇教程.html#what">第 10 章开头</a></li>
+  <li>JavaScript 是 10 天写出来的 —— <a href="第10-11章_贪吃蛇教程.html#features">第 10 章加餐</a></li>
+</ul>
+
+<div class="foot">
+  <p>这套教程一共 3 篇正文 + 13 个可运行的示例文件。</p>
+  <p>遇到不懂的标签，搜 “MDN 标签名”（比如 “MDN canvas”），是最快的查法。</p>
+</div>
+
 </body>
 </html>
